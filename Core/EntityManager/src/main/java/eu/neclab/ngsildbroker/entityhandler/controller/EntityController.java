@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.GetMapping;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.JsonParseException;
 import eu.neclab.ngsildbroker.commons.constants.AppConstants;
@@ -31,6 +32,11 @@ import eu.neclab.ngsildbroker.commons.tools.HttpUtils;
 import eu.neclab.ngsildbroker.entityhandler.config.EntityProducerChannel;
 import eu.neclab.ngsildbroker.entityhandler.services.EntityService;
 import eu.neclab.ngsildbroker.entityhandler.validationutil.Validator;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import javax.annotation.security.RolesAllowed;
+import org.apache.catalina.connector.Response;
+import org.springframework.context.annotation.Role;
+import org.springframework.web.bind.annotation.RequestHeader;
 
 /**
  * 
@@ -38,6 +44,7 @@ import eu.neclab.ngsildbroker.entityhandler.validationutil.Validator;
  * @date 10-Jul-2018
  */
 @RestController
+@CrossOrigin
 @RequestMapping("/ngsi-ld/v1/entities")
 public class EntityController {// implements EntityHandlerInterface {
 
@@ -82,15 +89,21 @@ public class EntityController {// implements EntityHandlerInterface {
 	public EntityController() {
 	}
 
+	/*@GetMapping("/test")
+        public ResponseEntity<String> getAll() {
+           return new ResponseEntity<>("Test successful!", HttpStatus.OK);
+        } */
+
 	/**
 	 * Method(POST) for "/ngsi-ld/v1/entities/" rest endpoint.
 	 * 
 	 * @param payload jsonld message
 	 * @return ResponseEntity object
 	 */
+	@RolesAllowed("Admin")
 	@PostMapping
 	public ResponseEntity<byte[]> createEntity(HttpServletRequest request,
-			@RequestBody(required = false) String payload) {
+			@RequestBody(required = false) String payload, @RequestHeader String Authorization) {
 		String result = null;
 		try {
 			HttpUtils.doPreflightCheck(request, payload);
@@ -128,8 +141,9 @@ public class EntityController {// implements EntityHandlerInterface {
 	 * @param payload  json ld message
 	 * @return ResponseEntity object
 	 */
+	@RolesAllowed({"Admin", "Application-Editor"})
 	@PatchMapping("/**/attrs")
-	public ResponseEntity<byte[]> updateEntity(HttpServletRequest request, @RequestBody String payload) {
+	public ResponseEntity<byte[]> updateEntity(HttpServletRequest request, @RequestBody String payload, @RequestHeader String Authorization) {
 		// String resolved = contextResolver.resolveContext(payload);
 		try {
 			HttpUtils.doPreflightCheck(request, payload);
@@ -172,9 +186,10 @@ public class EntityController {// implements EntityHandlerInterface {
 	 * @param payload  jsonld message
 	 * @return ResponseEntity object
 	 */
+	@RolesAllowed("Admin")
 	@PostMapping("/**/attrs")
 	public ResponseEntity<byte[]> appendEntity(HttpServletRequest request, @RequestBody String payload,
-			@RequestParam(required = false, name = "options") String options) {
+			@RequestParam(required = false, name = "options") String options, @RequestHeader String Authorization) {
 		// String resolved = contextResolver.resolveContext(payload);
 		try {
 			HttpUtils.doPreflightCheck(request, payload);
@@ -222,8 +237,9 @@ public class EntityController {// implements EntityHandlerInterface {
 	 * @param payload
 	 * @return
 	 */
+	@RolesAllowed({"Admin", "Application-Editor"})
 	@PatchMapping("/**/attrs/**")
-	public ResponseEntity<byte[]> partialUpdateEntity(HttpServletRequest request, @RequestBody String payload) {
+	public ResponseEntity<byte[]> partialUpdateEntity(HttpServletRequest request, @RequestBody String payload, @RequestHeader String Authorization) {
 		try {
 			String[] split = request.getServletPath().replace("/ngsi-ld/v1/entities/", "").split("/attrs/");
 			String attrId = HttpUtils.denormalize(split[1]);
@@ -276,10 +292,11 @@ public class EntityController {// implements EntityHandlerInterface {
 	 * @param attrId
 	 * @return
 	 */
+	@RolesAllowed("Admin")
 	@DeleteMapping("/**")
 	public ResponseEntity<byte[]> deleteAttribute(HttpServletRequest request,
 			@RequestParam(value = "datasetId", required = false) String datasetId,
-			@RequestParam(value = "deleteAll", required = false) String deleteAll) {
+			@RequestParam(value = "deleteAll", required = false) String deleteAll, @RequestHeader String Authorization) {
 		try {
 			String path = request.getServletPath().replace("/ngsi-ld/v1/entities/", "");
 			if (path.contains("/attrs/")) {
@@ -321,6 +338,7 @@ public class EntityController {// implements EntityHandlerInterface {
 	 * @param entityId
 	 * @return
 	 */
+	
 	public ResponseEntity<byte[]> deleteEntity(HttpServletRequest request) {
 		try {
 			String entityId = HttpUtils.denormalize(request.getServletPath().replace("/ngsi-ld/v1/entities/", ""));

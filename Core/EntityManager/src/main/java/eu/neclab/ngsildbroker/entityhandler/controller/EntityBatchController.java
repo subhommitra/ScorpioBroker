@@ -24,6 +24,11 @@ import eu.neclab.ngsildbroker.commons.serialization.DataSerializer;
 import eu.neclab.ngsildbroker.commons.tools.HttpUtils;
 import eu.neclab.ngsildbroker.entityhandler.services.EntityService;
 
+import javax.annotation.security.RolesAllowed;
+import org.apache.catalina.connector.Response;
+import org.springframework.context.annotation.Role;
+import org.springframework.web.bind.annotation.RequestHeader;
+
 @RestController
 @RequestMapping("/ngsi-ld/v1/entityOperations")
 public class EntityBatchController {
@@ -42,8 +47,9 @@ public class EntityBatchController {
 		httpUtils = HttpUtils.getInstance(contextResolver);
 	}
 
+	@RolesAllowed("Admin")
 	@PostMapping("/create")
-	public ResponseEntity<byte[]> createMultiple(HttpServletRequest request, @RequestBody String payload)
+	public ResponseEntity<byte[]> createMultiple(HttpServletRequest request, @RequestBody String payload, @RequestHeader String Authorization)
 			throws ResponseException {
 		try {
 			HttpUtils.doPreflightCheck(request, payload);
@@ -72,8 +78,9 @@ public class EntityBatchController {
 		return httpUtils.generateReply(body, null, status, false);
 	}
 
+	@RolesAllowed({"Admin", "Application-Editor"})
 	@PostMapping("/upsert")
-	public ResponseEntity<byte[]> upsertMultiple(HttpServletRequest request, @RequestBody String payload)
+	public ResponseEntity<byte[]> upsertMultiple(HttpServletRequest request, @RequestBody String payload, @RequestHeader String Authorization)
 			throws ResponseException {
 		try {
 			HttpUtils.doPreflightCheck(request, payload);
@@ -85,8 +92,9 @@ public class EntityBatchController {
 		}
 	}
 
+	@RolesAllowed({"Admin", "Application-Editor"})
 	@PostMapping("/update")
-	public ResponseEntity<byte[]> updateMultiple(HttpServletRequest request, @RequestBody String payload)
+	public ResponseEntity<byte[]> updateMultiple(HttpServletRequest request, @RequestBody String payload, @RequestHeader String Authorization)
 			throws ResponseException {
 		try {
 			HttpUtils.doPreflightCheck(request, payload);
@@ -98,8 +106,9 @@ public class EntityBatchController {
 		}
 	}
 
+	@RolesAllowed("Admin")
 	@PostMapping("/delete")
-	public ResponseEntity<byte[]> deleteMultiple(HttpServletRequest request, @RequestBody String payload)
+	public ResponseEntity<byte[]> deleteMultiple(HttpServletRequest request, @RequestBody String payload, @RequestHeader String Authorization)
 			throws ResponseException {
 		try {
 //			String resolved = httpUtils.expandPayload(request, payload);
