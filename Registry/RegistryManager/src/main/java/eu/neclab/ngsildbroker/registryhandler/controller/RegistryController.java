@@ -42,6 +42,12 @@ import eu.neclab.ngsildbroker.commons.tools.HttpUtils;
 import eu.neclab.ngsildbroker.registryhandler.repository.CSourceDAO;
 import eu.neclab.ngsildbroker.registryhandler.service.CSourceService;
 
+import org.springframework.web.bind.annotation.CrossOrigin;
+import javax.annotation.security.RolesAllowed;
+import org.apache.catalina.connector.Response;
+import org.springframework.context.annotation.Role;
+import org.springframework.web.bind.annotation.RequestHeader;
+
 /**
  * 
  * @version 1.0
@@ -92,12 +98,13 @@ public class RegistryController {
 	// }
 	// }
 
+	@RolesAllowed({"Admin", "Reader"})
 	@GetMapping
 	public ResponseEntity<byte[]> discoverCSource(HttpServletRequest request,
 			@RequestParam HashMap<String, String> queryMap,
 			@RequestParam(required = false, name = "limit", defaultValue = "0") int limit,
 			@RequestParam(value = "offset", required = false) Integer offset,
-			@RequestParam(value = "qtoken", required = false) String qToken) {
+			@RequestParam(value = "qtoken", required = false) String qToken, @RequestHeader String Authorization) {
 		try {
 			logger.trace("getCSources() ::");
 			String queryParams = request.getQueryString();
@@ -151,9 +158,10 @@ public class RegistryController {
 		}
 	}
 
+	@RolesAllowed("Admin")
 	@PostMapping
 	public ResponseEntity<byte[]> registerCSource(HttpServletRequest request,
-			@RequestBody(required = false) String payload) {
+			@RequestBody(required = false) String payload, @RequestHeader String Authorization) {
 		try {
 			HttpUtils.doPreflightCheck(request, payload);
 			logger.debug("payload received :: " + payload);
@@ -177,9 +185,10 @@ public class RegistryController {
 		}
 	}
 
+	@RolesAllowed({"Admin", "Reader"})
 	@GetMapping("{registrationId}")
 	public ResponseEntity<byte[]> getCSourceById(HttpServletRequest request,
-			@PathVariable("registrationId") String registrationId) {
+			@PathVariable("registrationId") String registrationId, @RequestHeader String Authorization) {
 		try {
 			logger.debug("get CSource() ::" + registrationId);
 			String tenantid = request.getHeader(NGSIConstants.TENANT_HEADER);
@@ -194,9 +203,10 @@ public class RegistryController {
 		}
 	}
 
+	@RolesAllowed("Admin")
 	@PatchMapping("{registrationId}")
 	public ResponseEntity<byte[]> updateCSource(HttpServletRequest request,
-			@PathVariable("registrationId") String registrationId, @RequestBody String payload) {
+			@PathVariable("registrationId") String registrationId, @RequestBody String payload, @RequestHeader String Authorization) {
 		try {
 			HttpUtils.doPreflightCheck(request, payload);
 			logger.debug("update CSource() ::" + registrationId);
@@ -214,9 +224,10 @@ public class RegistryController {
 		}
 	}
 
+	@RolesAllowed("Admin")
 	@DeleteMapping("{registrationId}")
 	public ResponseEntity<byte[]> deleteCSource(HttpServletRequest request,
-			@PathVariable("registrationId") String registrationId) {
+			@PathVariable("registrationId") String registrationId, @RequestHeader String Authorization) {
 		try {
 			logger.debug("delete CSource() ::" + registrationId);
 			csourceService.deleteCSourceRegistration(HttpUtils.getHeaders(request), registrationId);

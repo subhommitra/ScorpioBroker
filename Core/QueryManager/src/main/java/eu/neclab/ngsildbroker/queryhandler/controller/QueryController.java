@@ -35,6 +35,12 @@ import eu.neclab.ngsildbroker.commons.tools.HttpUtils;
 import eu.neclab.ngsildbroker.queryhandler.services.QueryService;
 import eu.neclab.ngsildbroker.queryhandler.utils.Validator;
 
+import org.springframework.web.bind.annotation.CrossOrigin;
+import javax.annotation.security.RolesAllowed;
+import org.apache.catalina.connector.Response;
+import org.springframework.context.annotation.Role;
+import org.springframework.web.bind.annotation.RequestHeader;
+
 @RestController
 @RequestMapping("/ngsi-ld/v1")
 public class QueryController {// implements QueryHandlerInterface {
@@ -82,10 +88,12 @@ public class QueryController {// implements QueryHandlerInterface {
 	 * @param attrs
 	 * @return
 	 */
+
+	@RolesAllowed({"Admin", "Reader", "Application-Editor"})
 	@GetMapping(path = "/entities/**")
 	public ResponseEntity<byte[]> getEntity(HttpServletRequest request,
 			@RequestParam(value = "attrs", required = false) List<String> attrs,
-			@RequestParam(value = "options", required = false) List<String> options) {
+			@RequestParam(value = "options", required = false) List<String> options, @RequestHeader String Authorization) {
 		String entityId = HttpUtils.denormalize(request.getServletPath().replace("/ngsi-ld/v1/entities/", ""));
 		String originalQuery = NGSIConstants.QUERY_PARAMETER_ID + "=" + entityId;
 		HashMap<String, String[]> paramMap = new HashMap<String, String[]>();
@@ -143,6 +151,8 @@ public class QueryController {// implements QueryHandlerInterface {
 	 * @param type
 	 * @return ResponseEntity object
 	 */
+	
+	@RolesAllowed({"Admin", "Reader", "Application-Editor"})
 	@GetMapping("/entities")
 	public ResponseEntity<byte[]> getAllEntity(HttpServletRequest request,
 			@RequestParam(value = "attrs", required = false) List<String> attrs,
@@ -151,7 +161,7 @@ public class QueryController {// implements QueryHandlerInterface {
 			@RequestParam(value = "qtoken", required = false) String qToken,
 			@RequestParam(name = "options", required = false) List<String> options,
 			@RequestParam(name = "services", required = false) Boolean showServices,
-			@RequestParam(value = "count", required = false, defaultValue = "false") boolean count) {
+			@RequestParam(value = "count", required = false, defaultValue = "false") boolean count, @RequestHeader String Authorization) {
 		
 		return getQueryData(request, request.getQueryString(), request.getParameterMap(), attrs, limit, offset, qToken,
 				options, showServices, false, count);

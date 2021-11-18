@@ -143,3 +143,15 @@ broker:
 
 #broker.parent.location.url=http://10.0.4.33:9090/ngsi-ld/v1/csourceRegistrations/
 #broker.parent.location.url=http://cema.nlehd.de:2095/ngsi-ld/v1/csourceRegistrations/          
+
+
+# Keycloak Server Information
+keycloak:
+  auth-server-url: ${KEYCLOAK_SERVER_URL}
+  credentials:
+    secret: ${CLIENT_SECRET}
+  realm: ${REALM}
+  bearer-only: 'true'
+  use-resource-role-mappings: 'true'
+  ssl-required: ${SSL_REQUIRED}
+  resource: ${CLIENT_ID}

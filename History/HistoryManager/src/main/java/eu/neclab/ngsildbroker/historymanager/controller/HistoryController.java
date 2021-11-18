@@ -39,6 +39,12 @@ import eu.neclab.ngsildbroker.historymanager.repository.HistoryDAO;
 import eu.neclab.ngsildbroker.historymanager.service.HistoryService;
 import eu.neclab.ngsildbroker.historymanager.utils.Validator;
 
+import org.springframework.web.bind.annotation.CrossOrigin;
+import javax.annotation.security.RolesAllowed;
+import org.apache.catalina.connector.Response;
+import org.springframework.context.annotation.Role;
+import org.springframework.web.bind.annotation.RequestHeader;
+
 @RestController
 @RequestMapping("/ngsi-ld/v1/temporal/entities")
 public class HistoryController {
@@ -69,9 +75,10 @@ public class HistoryController {
 		this.httpUtils = HttpUtils.getInstance(contextResolver);
 	}
 
+	@RolesAllowed("Admin")
 	@PostMapping
 	public ResponseEntity<byte[]> createTemporalEntity(HttpServletRequest request,
-			@RequestBody(required = false) String payload) {
+			@RequestBody(required = false) String payload, @RequestHeader String Authorization) {
 		try {
 			logger.trace("createTemporalEntity :: started");
 			Validator.validateTemporalEntity(payload);
@@ -91,12 +98,13 @@ public class HistoryController {
 		}
 	}
 
+	@RolesAllowed({"Admin", "Application Editor", "Reader"})
 	@GetMapping
 	public ResponseEntity<byte[]> retrieveTemporalEntity(HttpServletRequest request,
 			@RequestParam(value = "limit", required = false) Integer limit,
 			@RequestParam(value = "offset", required = false) Integer offset,
 			@RequestParam(value = "qtoken", required = false) String qToken,
-			@RequestParam(name = "options", required = false) List<String> options) {
+			@RequestParam(name = "options", required = false) List<String> options, @RequestHeader String Authorization) {
 		
 		try {
 			logger.trace("retrieveTemporalEntity :: started");
@@ -146,9 +154,10 @@ public class HistoryController {
 		}
 	}
 
+	@RolesAllowed({"Admin", "Application-Editor", "Reader"})
 	@GetMapping("/{entityId}")
 	public ResponseEntity<byte[]> retrieveTemporalEntityById(HttpServletRequest request,
-			@PathVariable("entityId") String entityId) {
+			@PathVariable("entityId") String entityId, @RequestHeader String Authorization) {
 		String params = request.getQueryString();
 		try {
 			logger.trace("retrieveTemporalEntityById :: started " + entityId);
@@ -177,9 +186,10 @@ public class HistoryController {
 		}
 	}
 
+	@RolesAllowed("Admin")
 	@DeleteMapping("/{entityId}")
 	public ResponseEntity<byte[]> deleteTemporalEntityById(HttpServletRequest request,
-			@PathVariable("entityId") String entityId) {
+			@PathVariable("entityId") String entityId, @RequestHeader String Authorization) {
 		try {
 			logger.trace("deleteTemporalEntityById :: started");
 			logger.debug("entityId : " + entityId);
@@ -197,9 +207,10 @@ public class HistoryController {
 		}
 	}
 
+	@RolesAllowed("Admin")
 	@PostMapping("/{entityId}/attrs")
 	public ResponseEntity<byte[]> addAttrib2TemopralEntity(HttpServletRequest request,
-			@PathVariable("entityId") String entityId, @RequestBody(required = false) String payload) {
+			@PathVariable("entityId") String entityId, @RequestBody(required = false) String payload, @RequestHeader String Authorization) {
 		try {
 			logger.trace("addAttrib2TemopralEntity :: started");
 			logger.debug("entityId : " + entityId);
@@ -218,9 +229,10 @@ public class HistoryController {
 		}
 	}
 
+	@RolesAllowed("Admin")
 	@DeleteMapping("/{entityId}/attrs/{attrId}")
 	public ResponseEntity<byte[]> deleteAttrib2TemporalEntity(HttpServletRequest request,
-			@PathVariable("entityId") String entityId, @PathVariable("attrId") String attrId) {
+			@PathVariable("entityId") String entityId, @PathVariable("attrId") String attrId, @RequestHeader String Authorization) {
 		try {
 			logger.trace("deleteAttrib2TemporalEntity :: started");
 			logger.debug("entityId : " + entityId + " attrId : " + attrId);
@@ -238,10 +250,11 @@ public class HistoryController {
 		}
 	}
 
+	@RolesAllowed({"Admin", "Application-Editor"})
 	@PatchMapping("/{entityId}/attrs/{attrId}/{instanceId}")
 	public ResponseEntity<byte[]> modifyAttribInstanceTemporalEntity(HttpServletRequest request,
 			@PathVariable("entityId") String entityId, @PathVariable("attrId") String attrId,
-			@PathVariable("instanceId") String instanceId, @RequestBody(required = false) String payload) {
+			@PathVariable("instanceId") String instanceId, @RequestBody(required = false) String payload, @RequestHeader String Authorization) {
 		try {
 			logger.trace("modifyAttribInstanceTemporalEntity :: started");
 			logger.debug("entityId : " + entityId + " attrId : " + attrId + " instanceId : " + instanceId);
@@ -264,10 +277,11 @@ public class HistoryController {
 		}
 	}
 
+	@RolesAllowed("Admin")
 	@DeleteMapping("/{entityId}/attrs/{attrId}/{instanceId}")
 	public ResponseEntity<byte[]> deleteAtrribInstanceTemporalEntity(HttpServletRequest request,
 			@PathVariable("entityId") String entityId, @PathVariable("attrId") String attrId,
-			@PathVariable("instanceId") String instanceId) {
+			@PathVariable("instanceId") String instanceId, @RequestHeader String Authorization) {
 		try {
 			logger.trace("deleteAtrribInstanceTemporalEntity :: started");
 			logger.debug("entityId : " + entityId + " attrId : " + attrId + " instanceId : " + instanceId);

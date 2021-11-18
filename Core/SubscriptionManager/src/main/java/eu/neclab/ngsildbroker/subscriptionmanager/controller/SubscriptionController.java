@@ -40,6 +40,12 @@ import eu.neclab.ngsildbroker.commons.serialization.DataSerializer;
 import eu.neclab.ngsildbroker.commons.stream.service.KafkaOps;
 import eu.neclab.ngsildbroker.commons.tools.HttpUtils;
 
+import org.springframework.web.bind.annotation.CrossOrigin;
+import javax.annotation.security.RolesAllowed;
+import org.apache.catalina.connector.Response;
+import org.springframework.context.annotation.Role;
+import org.springframework.web.bind.annotation.RequestHeader;
+
 @RestController
 @RequestMapping("/ngsi-ld/v1/subscriptions")
 public class SubscriptionController {
@@ -83,9 +89,10 @@ public class SubscriptionController {
 		this.httpUtils = HttpUtils.getInstance(contextResolver);
 	}
 
+	@RolesAllowed({"Admin", "Subscriber"})
 	@RequestMapping(method = RequestMethod.POST)
 	@ResponseBody
-	public ResponseEntity<byte[]> subscribeRest(HttpServletRequest request, @RequestBody String payload) {
+	public ResponseEntity<byte[]> subscribeRest(HttpServletRequest request, @RequestBody String payload, @RequestHeader String Authorization) {
 		logger.trace("subscribeRest() :: started");
 		Subscription subscription = null;
 
@@ -112,9 +119,10 @@ public class SubscriptionController {
 		}
 	}
 
+	@RolesAllowed({"Admin", "Reader"})
 	@RequestMapping(method = RequestMethod.GET, value = "/")
 	public ResponseEntity<byte[]> getAllSubscriptions(HttpServletRequest request,
-			@RequestParam(required = false, name = "limit", defaultValue = "0") int limit) throws ResponseException {
+			@RequestParam(required = false, name = "limit", defaultValue = "0") int limit, @RequestHeader String Authorization) throws ResponseException {
 		logger.trace("getAllSubscriptions() :: started");
 		List<SubscriptionRequest> result = null;
 		result = manager.getAllSubscriptions(limit, HttpUtils.getHeaders(request));
@@ -131,10 +139,11 @@ public class SubscriptionController {
 		return result;
 	}
 
+	@RolesAllowed({"Admin, Subsciber, Reader"})
 	@RequestMapping(method = RequestMethod.GET, value = "/{id}")
 	public ResponseEntity<byte[]> getSubscriptions(HttpServletRequest request,
 			@PathVariable(name = NGSIConstants.QUERY_PARAMETER_ID, required = true) String id,
-			@RequestParam(required = false, name = "limit", defaultValue = "0") int limit) {
+			@RequestParam(required = false, name = "limit", defaultValue = "0") int limit, @RequestHeader String Authorization) {
 		try {
 			logger.trace("call getSubscriptions() ::");
 			return httpUtils.generateReply(request,
@@ -147,9 +156,10 @@ public class SubscriptionController {
 
 	}
 
+	@RolesAllowed({"Admin", "Subscriber"})
 	@RequestMapping(method = RequestMethod.DELETE, value = "/{id}")
 	public ResponseEntity<byte[]> deleteSubscription(HttpServletRequest request,
-			@PathVariable(name = NGSIConstants.QUERY_PARAMETER_ID, required = true) URI id) {
+			@PathVariable(name = NGSIConstants.QUERY_PARAMETER_ID, required = true) URI id, @RequestHeader String Authorization) {
 		try {
 			logger.trace("call deleteSubscription() ::");
 			// System.out.println("DELETING SUBSCRIPTION: " + id + " at " +
@@ -162,10 +172,11 @@ public class SubscriptionController {
 		return ResponseEntity.noContent().build();
 	}
 
+	@RolesAllowed({"Admin", "Subscriber"})
 	@RequestMapping(method = RequestMethod.PATCH, value = "/{" + NGSIConstants.QUERY_PARAMETER_ID + "}")
 	public ResponseEntity<byte[]> updateSubscription(HttpServletRequest request,
 			@PathVariable(name = NGSIConstants.QUERY_PARAMETER_ID, required = true) URI id,
-			@RequestBody String payload) {
+			@RequestBody String payload, @RequestHeader String Authorization) {
 		logger.trace("call updateSubscription() ::");
 
 		try {

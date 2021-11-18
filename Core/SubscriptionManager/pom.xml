@@ -44,7 +44,29 @@
 
 		</profile>
 	</profiles>
+	<properties>
+		<!-- <java.version>11</java.version> -->
+		<keycloak.version>15.0.2</keycloak.version>
+	</properties>
 	<dependencies>
+
+		<!-- Keycloak Dependencies -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-security</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.security</groupId>
+			<artifactId>spring-security-test</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+      		<groupId>org.keycloak</groupId>
+      		<artifactId>keycloak-spring-boot-starter</artifactId>
+      		<version>${keycloak.version}</version>
+   		</dependency>
+		<!-- End of block -->
+
 		<dependency>
 			<groupId>com.google.guava</groupId>
 			<artifactId>guava</artifactId>
@@ -117,4 +139,19 @@
 			<version>3.0.8</version>
 		</dependency>
 	</dependencies>
+
+	<!-- Added to the code -->
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>org.keycloak.bom</groupId>
+				<artifactId>keycloak-adapter-bom</artifactId>
+				<version>${keycloak.version}</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
+	<!-- End of Block -->
+	
 </project>
