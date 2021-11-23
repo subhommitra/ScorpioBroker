@@ -38,7 +38,7 @@ eureka:
 ##
   image:
    repository: ibn40/digitaltwin
-   tag: eureka-server
+   tag: eureka-server_2.0.0-SNAPSHOT
 ## Specify a imagePullPolicy
 ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
 ##
@@ -108,7 +108,7 @@ gateway:
 ##
   image:
    repository: ibn40/digitaltwin
-   tag: gateway
+   tag: gateway_2.0.0-SNAPSHOT
 ## Specify a imagePullPolicy
 ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
 ##
@@ -178,7 +178,7 @@ AtContextServer:
 ##
   image:
    repository: ibn40/digitaltwin
-   tag: AtContextServer
+   tag: AtContextServer_2.0.0-SNAPSHOT
 ## Specify a imagePullPolicy
 ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
 ##
@@ -248,7 +248,7 @@ ConfigServer:
 ##
   image:
    repository: ibn40/digitaltwin
-   tag: config-server
+   tag: config-server_2.0.0-SNAPSHOT
 ## Specify a imagePullPolicy
 ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
 ##
@@ -318,7 +318,7 @@ EntityManager:
 ##
   image:
    repository: ibn40/digitaltwin
-   tag: EntityManager
+   tag: EntityManager_2.0.0-SNAPSHOT
 ## Specify a imagePullPolicy
 ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
 ##
@@ -388,11 +388,11 @@ HistoryManager:
 ##
   image:
    repository: ibn40/digitaltwin
-   tag: HistoryManager
+   tag: HistoryManager_2.0.0-SNAPSHOT
 ## Specify a imagePullPolicy
 ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
 ##
-   pullPolicy: IfNotPresent
+   pullPolicy: Always
 
 ## HistoryManager containers' resource requests and limits
 ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
@@ -458,7 +458,7 @@ QueryManager:
 ##
   image:
    repository: ibn40/digitaltwin
-   tag: QueryManager
+   tag: QueryManager_2.0.0-SNAPSHOT
 ## Specify a imagePullPolicy
 ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
 ##
@@ -528,7 +528,7 @@ RegistryManager:
 ##
   image:
    repository: ibn40/digitaltwin
-   tag: RegistryManager
+   tag: RegistryManager_2.0.0-SNAPSHOT
 ## Specify a imagePullPolicy
 ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
 ##
@@ -598,7 +598,7 @@ StorageManager:
 ##
   image:
    repository: ibn40/digitaltwin
-   tag: StorageManager
+   tag: StorageManager_2.0.0-SNAPSHOT
 ## Specify a imagePullPolicy
 ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
 ##
@@ -669,7 +669,7 @@ SubscriptionManager:
 ##
   image:
    repository: ibn40/digitaltwin
-   tag: SubscriptionManager
+   tag: SubscriptionManager_2.0.0-SNAPSHOT
 ## Specify a imagePullPolicy
 ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
 ##
