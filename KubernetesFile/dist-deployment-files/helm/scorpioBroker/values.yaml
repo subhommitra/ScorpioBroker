@@ -1,5 +1,5 @@
 ## namespace for deployment
-namespace: scorpio-broker
+namespace: test_integrating
 
 ################################### SpringArgs #######################################################################
 springArgs:
@@ -159,8 +159,8 @@ AtContextServer:
 ## Please use only latest version of docker images as few older images might not work with kubernetes. 
 ##
   image:
-   repository: scorpiobroker/scorpio
-   tag: AtContextServer_latest
+   repository: ibn40/digitaltwin
+   tag: AtContextServer_test
 ## Specify a imagePullPolicy
 ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
 ##

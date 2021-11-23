@@ -4,7 +4,7 @@ metadata:
   labels:
     service: atcontext-server
   name: atcontext-server
-  namespace: scorpio-broker
+  namespace: kafka
 spec:
   replicas: 1
   selector:
@@ -17,9 +17,16 @@ spec:
         service: atcontext-server
     spec:
       containers:
-      - image: scorpiobroker/scorpio:AtContextServer_latest
+      - image: ibn40/digitaltwin:AtContextServer_test
         imagePullPolicy: Always
         name: atcontext-server
+        env:                            #edited
+        - name: KAFKA_BROKERS
+          value: "my-cluster-kafka-brokers"
+        - name: KAFKA_PORT
+          value: "9092"
+        - name: KAFKA_BOOTSTRAP
+          value: "my-cluster-kafka-bootstrap"
         ports:
         - containerPort: 27015
         lifecycle:

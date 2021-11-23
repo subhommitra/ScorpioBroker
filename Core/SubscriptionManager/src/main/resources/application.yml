@@ -28,7 +28,7 @@ query:
     topic: QUERY_RESULT
 #kafka broker path
 bootstrap:
-  servers: localhost:9092
+  servers: ${KAFKA_BOOTSTRAP}:${KAFKA_PORT}         #edited
 
 key:
   deserializer: org.apache.kafka.common.serialization.StringDeserializer
@@ -59,7 +59,7 @@ spring:
     stream:
       kafka:
         binder:
-          brokers: localhost:9092
+          brokers: ${KAFKA_BROKERS}:${KAFKA_PORT}      #edited
       bindings:
         SUBSCRIPTIONS_WRITE_CHANNEL:
           destination: SUBSCRIPTIONS

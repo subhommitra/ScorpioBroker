@@ -13,7 +13,7 @@ spring:
     stream:
       kafka:
         binder:
-          brokers: localhost:9092
+          brokers: ${KAFKA_BROKERS}:${KAFKA_PORT}      #edited
       bindings:
          ATCONTEXT_WRITE_CHANNEL:
           destination: ATCONTEXT
@@ -36,7 +36,7 @@ csource:
     topic: CONTEXT_REGISTRY_QUERY
     
 bootstrap:
-  servers: localhost:9092
+  servers: ${KAFKA_BOOTSTRAP}:${KAFKA_PORT}         #edited
 #enable log compaction
 
 
