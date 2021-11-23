@@ -27,6 +27,13 @@ spec:
         env:
           - name: spring_args
             value: {{ .Values.springArgs.value }}
+          - name: KAFKA_BROKERS
+            value: my-cluster-kafka-brokers
+          - name: KAFKA_PORT
+            value: 9092
+          - name: KAFKA_BOOTSTRAP
+            value: my-cluster-kafka-bootstrap
+
         {{- end}}
         imagePullPolicy: {{ .Values.AtContextServer.image.pullPolicy }}
         name: {{ .Values.AtContextServer.name }}
@@ -60,7 +67,5 @@ spec:
       {{- end}}
       securityContext: {{ .Values.AtContextServer.securityContext | toYaml }}
       terminationGracePeriodSeconds: {{ .Values.AtContextServer.terminationGracePeriodSeconds }}
-      imagePullSecrets:
-        - name: {{ .Values.imageCredentials.name }}
 status: {}
 {{- end }}

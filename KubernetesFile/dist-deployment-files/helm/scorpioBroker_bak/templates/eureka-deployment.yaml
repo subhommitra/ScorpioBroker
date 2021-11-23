@@ -53,7 +53,5 @@ spec:
       {{- end}}
       securityContext: {{ .Values.eureka.securityContext | toYaml }}
       terminationGracePeriodSeconds: {{ .Values.eureka.terminationGracePeriodSeconds }}
-      imagePullSecrets:
-        - name: {{ .Values.imageCredentials.name }}
 status: {}
 {{- end }}

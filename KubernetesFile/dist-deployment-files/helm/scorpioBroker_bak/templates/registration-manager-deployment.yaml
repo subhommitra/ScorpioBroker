@@ -60,7 +60,5 @@ spec:
       {{- end}}
       securityContext: {{ .Values.RegistryManager.securityContext | toYaml }}
       terminationGracePeriodSeconds: {{ .Values.RegistryManager.terminationGracePeriodSeconds }}
-      imagePullSecrets:
-        - name: {{ .Values.imageCredentials.name }}
 status: {}
 {{- end }}

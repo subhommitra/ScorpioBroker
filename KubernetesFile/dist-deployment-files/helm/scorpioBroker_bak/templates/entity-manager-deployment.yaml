@@ -60,7 +60,5 @@ spec:
       {{- end}}
       securityContext: {{ .Values.EntityManager.securityContext | toYaml }}
       terminationGracePeriodSeconds: {{ .Values.EntityManager.terminationGracePeriodSeconds }}
-      imagePullSecrets:
-        - name: {{ .Values.imageCredentials.name }}
 status: {}
 {{- end }}

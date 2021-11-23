@@ -60,7 +60,5 @@ spec:
       {{- end}}
       securityContext: {{ .Values.QueryManager.securityContext | toYaml }}
       terminationGracePeriodSeconds: {{ .Values.QueryManager.terminationGracePeriodSeconds }}
-      imagePullSecrets:
-        - name: {{ .Values.imageCredentials.name }}
 status: {}
 {{- end }}

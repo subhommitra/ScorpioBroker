@@ -1,28 +1,10 @@
 ## namespace for deployment
-namespace: scorpio-test
-
-## credentials for private docker repo
-imageCredentials:
-  name: ibn40-fusionreadonly
-  registry: https://index.docker.io/v1/
-  username: fusionreadonly
-  password: IndustryFusion4.0!
+namespace: test_integrating
 
 ################################### SpringArgs #######################################################################
 springArgs:
   overrideSpringArgs: false
   value: >
-################################### Built-in Kafka ###################################################################
-kafka:
-  enabled: false
-
-################################### Built-in Postgres ###################################################################
-postgres:
-  enabled: true
-
-################################### Built-in Zookeeper ###################################################################
-zookeeper:
-  enabled: true
 
 ################################### Eureka Server #######################################################################
 eureka:
@@ -37,8 +19,8 @@ eureka:
 ## Please use only latest version of docker images as few older images might not work with kubernetes. 
 ##
   image:
-   repository: ibn40/digitaltwin
-   tag: eureka-server
+   repository: scorpiobroker/scorpio
+   tag: eureka-server_latest
 ## Specify a imagePullPolicy
 ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
 ##
@@ -107,8 +89,8 @@ gateway:
 ## Please use only latest version of docker images as few older images might not work with kubernetes. 
 ##
   image:
-   repository: ibn40/digitaltwin
-   tag: gateway
+   repository: scorpiobroker/scorpio
+   tag: gateway_latest
 ## Specify a imagePullPolicy
 ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
 ##
@@ -178,7 +160,7 @@ AtContextServer:
 ##
   image:
    repository: ibn40/digitaltwin
-   tag: AtContextServer
+   tag: AtContextServer_test
 ## Specify a imagePullPolicy
 ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
 ##
@@ -247,8 +229,8 @@ ConfigServer:
 ## Please use only latest version of docker images as few older images might not work with kubernetes. 
 ##
   image:
-   repository: ibn40/digitaltwin
-   tag: config-server
+   repository: scorpiobroker/scorpio
+   tag: config-server_latest
 ## Specify a imagePullPolicy
 ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
 ##
@@ -317,8 +299,8 @@ EntityManager:
 ## Please use only latest version of docker images as few older images might not work with kubernetes. 
 ##
   image:
-   repository: ibn40/digitaltwin
-   tag: EntityManager
+   repository: scorpiobroker/scorpio
+   tag: EntityManager_latest
 ## Specify a imagePullPolicy
 ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
 ##
@@ -387,12 +369,12 @@ HistoryManager:
 ## Please use only latest version of docker images as few older images might not work with kubernetes. 
 ##
   image:
-   repository: ibn40/digitaltwin
-   tag: HistoryManager
+   repository: scorpiobroker/scorpio
+   tag: HistoryManager_latest
 ## Specify a imagePullPolicy
 ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
 ##
-   pullPolicy: IfNotPresent
+   pullPolicy: Always
 
 ## HistoryManager containers' resource requests and limits
 ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
@@ -457,8 +439,8 @@ QueryManager:
 ## Please use only latest version of docker images as few older images might not work with kubernetes. 
 ##
   image:
-   repository: ibn40/digitaltwin
-   tag: QueryManager
+   repository: scorpiobroker/scorpio
+   tag: QueryManager_latest
 ## Specify a imagePullPolicy
 ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
 ##
@@ -527,8 +509,8 @@ RegistryManager:
 ## Please use only latest version of docker images as few older images might not work with kubernetes. 
 ##
   image:
-   repository: ibn40/digitaltwin
-   tag: RegistryManager
+   repository: scorpiobroker/scorpio
+   tag: RegistryManager_latest
 ## Specify a imagePullPolicy
 ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
 ##
@@ -597,8 +579,8 @@ StorageManager:
 ## Please use only latest version of docker images as few older images might not work with kubernetes. 
 ##
   image:
-   repository: ibn40/digitaltwin
-   tag: StorageManager
+   repository: scorpiobroker/scorpio
+   tag: StorageManager_latest
 ## Specify a imagePullPolicy
 ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
 ##
@@ -668,8 +650,8 @@ SubscriptionManager:
 ## Please use only latest version of docker images as few older images might not work with kubernetes. 
 ##
   image:
-   repository: ibn40/digitaltwin
-   tag: SubscriptionManager
+   repository: scorpiobroker/scorpio
+   tag: SubscriptionManager_latest
 ## Specify a imagePullPolicy
 ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
 ##
