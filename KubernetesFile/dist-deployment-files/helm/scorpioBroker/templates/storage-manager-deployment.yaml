@@ -23,8 +23,12 @@ spec:
     spec:
       containers:
       - image: {{ .Values.StorageManager.image.repository }}:{{ .Values.StorageManager.image.tag }}
+        env:
+        {{- range $key, $val := .Values.postgres_vars}}
+          - name: {{ $key }}
+            value: {{ $val | quote }}
+        {{- end }}
         {{- if .Values.StorageManager.kafka_vars }}
-        env:          
         {{- range $key, $val := .Values.kafka_vars }}
           - name: {{ $key }}
             value: {{ $val | quote }}

@@ -16,7 +16,7 @@ spring:
       minimumIdle: 5
       poolName: SpringBootHikariCP
     password: ngb
-    url: jdbc:postgresql://postgres:5432/ngb?ApplicationName=ngb_registrymanager
+    url: jdbc:postgresql://${POSTGRES_SERVICE}:${POSTGRES_PORT}/ngb?ApplicationName=ngb_registrymanager
     username: ngb
   flyway:
     baselineOnMigrate: true
@@ -31,13 +31,13 @@ writer:
       minimumIdle: 5
       poolName: SpringBootHikariCP_Writer
     password: ngb
-    url: jdbc:postgresql://postgres:5432/ngb?ApplicationName=ngb_entitymanager_writer
+    url: jdbc:postgresql://${POSTGRES_SERVICE}:${POSTGRES_PORT}/ngb?ApplicationName=ngb_entitymanager_writer
     username: ngb
   enabled: true
 reader:
   enabled: true
   datasource:
-    url: "jdbc:postgresql://postgres:5432/ngb?ApplicationName=ngb_entitymanager_reader"
+    url: "jdbc:postgresql://${POSTGRES_SERVICE}:${POSTGRES_PORT}/ngb?ApplicationName=ngb_entitymanager_reader"
     username: ngb
     password: ngb
     hikari:
@@ -56,3 +56,14 @@ eureka:
   client:
     serviceUrl:
       defaultZone: http://eureka:8761/eureka/
+
+# Keycloak Server Information
+keycloak:
+  auth-server-url: ${KEYCLOAK_SERVER_URL}
+  credentials:
+    secret: ${CLIENT_SECRET}
+  realm: ${REALM}
+  bearer-only: 'true'
+  use-resource-role-mappings: 'true'
+  ssl-required: ${SSL_REQUIRED}
+  resource: ${CLIENT_ID}

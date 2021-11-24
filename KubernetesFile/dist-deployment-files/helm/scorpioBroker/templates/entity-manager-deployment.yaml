@@ -23,8 +23,16 @@ spec:
     spec:
       containers:
       - image: {{ .Values.EntityManager.image.repository }}:{{ .Values.EntityManager.image.tag }}
-        {{- if .Values.EntityManager.kafka_vars }}
-        env:          
+        env:
+        {{- range $key, $val := .Values.postgres_vars}}
+          - name: {{ $key }}
+            value: {{ $val | quote }}
+        {{- end }}
+        {{- range $key, $val := .Values.keycloak_vars}}
+          - name: {{ $key }}
+            value: {{ $val | quote }}
+        {{- end }}
+        {{- if .Values.EntityManager.kafka_vars }}          
         {{- range $key, $val := .Values.kafka_vars }}
           - name: {{ $key }}
             value: {{ $val | quote }}

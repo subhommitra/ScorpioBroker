@@ -1,6 +1,19 @@
 ## namespace for deployment
 namespace: scorpio-test
 
+## environment variables for keycloak
+keycloak_vars:
+  KEYCLOAK_SERVER_URL: url
+  CLIENT_SECRET: secret
+  REALM: realm
+  SSL_REQUIRED: ssl
+  CLIENT_ID: id
+
+## environment variables for postgres
+postgres_vars:
+  POSTGRES_SERVICE: postgres.postgres
+  POSTGRES_PORT: 5432
+
 ## environment variables for kafka
 kafka_vars:
   KAFKA_ADVERTISED_HOST_NAME: my-cluster-kafka-brokers.kafka
@@ -29,7 +42,7 @@ kafka:
 
 ################################### Built-in Postgres ###################################################################
 postgres:
-  enabled: true
+  enabled: false
 
 ################################### Built-in Zookeeper ###################################################################
 zookeeper:
@@ -320,7 +333,8 @@ ConfigServer:
 EntityManager:
 ## Enable the EntityManager deployment & service
   enabled: true
-  kafka_vars: true  
+  kafka_vars: true 
+  keycloak_vars: true 
   name: entity-manager
 ## Number of EntityManager instances to deploy
 ##
@@ -391,7 +405,8 @@ EntityManager:
 HistoryManager:
 ## Enable the HistoryManager deployment & service
   enabled: true
-  kafka_vars: true  
+  kafka_vars: true 
+  keycloak_vars: true 
   name: history-manager
 ## Number of HistoryManager instances to deploy
 ##
@@ -463,6 +478,7 @@ QueryManager:
 ## Enable the QueryManager deployment & service
   enabled: true 
   kafka_vars: true 
+  keycloak_vars: true
   name: query-manager
 ## Number of QueryManager instances to deploy
 ##
@@ -534,6 +550,7 @@ RegistryManager:
 ## Enable the RegistryManager deployment & service
   enabled: true 
   kafka_vars: true 
+  keycloak_vars: true
   name: registry-manager
 ## Number of RegistryManager instances to deploy
 ##
@@ -677,6 +694,7 @@ SubscriptionManager:
 ## Enable the SubscriptionManager deployment & service
   enabled: true 
   kafka_vars: true 
+  keycloak_vars: true
   name: subscription-manager
 ## Number of SubscriptionManager instances to deploy
 ##

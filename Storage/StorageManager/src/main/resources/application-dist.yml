@@ -21,7 +21,7 @@ eureka:
 reader:
   enabled: true
   datasource:
-    url: jdbc:postgresql://postgres:5432/ngb?ApplicationName=ngb_storagemanager_reader
+    url: jdbc:postgresql://${POSTGRES_SERVICE}:{POSTGRES_PORT}/ngb?ApplicationName=ngb_storagemanager_reader
     username: ngb
     password: ngb
     hikari: 
@@ -35,7 +35,7 @@ reader:
 writer:
   enabled: true
   datasource:
-    url: jdbc:postgresql://postgres:5432/ngb?ApplicationName=ngb_storagemanager_writer
+    url: jdbc:postgresql://${POSTGRES_SERVICE}:{POSTGRES_PORT}/ngb?ApplicationName=ngb_storagemanager_writer
     username: ngb
     password: ngb
     hikari: 
