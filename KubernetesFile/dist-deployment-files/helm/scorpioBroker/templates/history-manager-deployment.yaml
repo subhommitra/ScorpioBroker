@@ -23,6 +23,13 @@ spec:
     spec:
       containers:
       - image: {{ .Values.HistoryManager.image.repository }}:{{ .Values.HistoryManager.image.tag }}
+        {{- if .Values.HistoryManager.kafka_vars }}
+        env:          
+        {{- range $key, $val := .Values.kafka_vars }}
+          - name: {{ $key }}
+            value: {{ $val | quote }}
+        {{- end }}
+        {{- end}}
         {{- if .Values.springArgs.overrideSpringArgs }}
         env:
           - name: spring_args

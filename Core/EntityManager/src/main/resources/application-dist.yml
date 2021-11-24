@@ -6,7 +6,7 @@ spring:
     stream:
       kafka:
         binder:
-          brokers: kafka:9092
+          brokers: ${KAFKA_BROKERS}:${KAFKA_PORT}      #edited
   datasource:
     hikari:
       connectionTimeout: 30000
@@ -49,7 +49,7 @@ reader:
       connectionTimeout: 30000
   
 bootstrap:
-  servers: kafka:9092
+  servers: ${KAFKA_BOOTSTRAP}:${KAFKA_PORT}         #edited
 eureka:
   instance:
     preferIpAddress: true

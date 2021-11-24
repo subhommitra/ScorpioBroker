@@ -1,6 +1,17 @@
 ## namespace for deployment
 namespace: scorpio-test
 
+## environment variables for kafka
+kafka_vars:
+  KAFKA_ADVERTISED_HOST_NAME: my-cluster-kafka-brokers.kafka
+  KAFKA_BOOTSTRAP: my-cluster-kafka-bootstrap.kafka
+  KAFKA_BROKERS: my-cluster-kafka-brokers.kafka
+  KAFKA_ZOOKEEPER_CONNECT: my-cluster-zookeeper-client.kafka:2181
+  KAFKA_ADVERTISED_PORT: 9092
+  KAFKA_PORT: 9092
+  KAFKA_LOG_RETENTION_MS: 10000
+  KAFKA_LOG_RETENTION_CHECK_INTERVAL_MS: 5000
+
 ## credentials for private docker repo
 imageCredentials:
   name: ibn40-fusionreadonly
@@ -22,7 +33,7 @@ postgres:
 
 ################################### Built-in Zookeeper ###################################################################
 zookeeper:
-  enabled: true
+  enabled: false
 
 ################################### Eureka Server #######################################################################
 eureka:
@@ -38,7 +49,7 @@ eureka:
 ##
   image:
    repository: ibn40/digitaltwin
-   tag: eureka-server_2.0.0-SNAPSHOT
+   tag: eureka-server_2.0.0-v2
 ## Specify a imagePullPolicy
 ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
 ##
@@ -108,7 +119,7 @@ gateway:
 ##
   image:
    repository: ibn40/digitaltwin
-   tag: gateway_2.0.0-SNAPSHOT
+   tag: gateway_2.0.0-v2
 ## Specify a imagePullPolicy
 ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
 ##
@@ -167,7 +178,8 @@ gateway:
 ################################### AtContextServer ##########################################################################
 AtContextServer:
 ## Enable the AtContextServer deployment & service
-  enabled: true 
+  enabled: true
+  kafka_vars: true 
   name: at-context-server
 ## Number of AtContextServer instances to deploy
 ##
@@ -178,7 +190,7 @@ AtContextServer:
 ##
   image:
    repository: ibn40/digitaltwin
-   tag: AtContextServer_2.0.0-SNAPSHOT
+   tag: AtContextServer_2.0.0-v2
 ## Specify a imagePullPolicy
 ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
 ##
@@ -248,7 +260,7 @@ ConfigServer:
 ##
   image:
    repository: ibn40/digitaltwin
-   tag: config-server_2.0.0-SNAPSHOT
+   tag: config-server_2.0.0-v2
 ## Specify a imagePullPolicy
 ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
 ##
@@ -307,7 +319,8 @@ ConfigServer:
 ################################### EntityManager ##########################################################################
 EntityManager:
 ## Enable the EntityManager deployment & service
-  enabled: true 
+  enabled: true
+  kafka_vars: true  
   name: entity-manager
 ## Number of EntityManager instances to deploy
 ##
@@ -318,7 +331,7 @@ EntityManager:
 ##
   image:
    repository: ibn40/digitaltwin
-   tag: EntityManager_2.0.0-SNAPSHOT
+   tag: EntityManager_2.0.0-v2
 ## Specify a imagePullPolicy
 ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
 ##
@@ -377,7 +390,8 @@ EntityManager:
 ################################### HistoryManager ##########################################################################
 HistoryManager:
 ## Enable the HistoryManager deployment & service
-  enabled: true 
+  enabled: true
+  kafka_vars: true  
   name: history-manager
 ## Number of HistoryManager instances to deploy
 ##
@@ -388,7 +402,7 @@ HistoryManager:
 ##
   image:
    repository: ibn40/digitaltwin
-   tag: HistoryManager_2.0.0-SNAPSHOT
+   tag: HistoryManager_2.0.0-v2
 ## Specify a imagePullPolicy
 ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
 ##
@@ -448,6 +462,7 @@ HistoryManager:
 QueryManager:
 ## Enable the QueryManager deployment & service
   enabled: true 
+  kafka_vars: true 
   name: query-manager
 ## Number of QueryManager instances to deploy
 ##
@@ -458,7 +473,7 @@ QueryManager:
 ##
   image:
    repository: ibn40/digitaltwin
-   tag: QueryManager_2.0.0-SNAPSHOT
+   tag: QueryManager_2.0.0-v2
 ## Specify a imagePullPolicy
 ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
 ##
@@ -518,6 +533,7 @@ QueryManager:
 RegistryManager:
 ## Enable the RegistryManager deployment & service
   enabled: true 
+  kafka_vars: true 
   name: registry-manager
 ## Number of RegistryManager instances to deploy
 ##
@@ -528,7 +544,7 @@ RegistryManager:
 ##
   image:
    repository: ibn40/digitaltwin
-   tag: RegistryManager_2.0.0-SNAPSHOT
+   tag: RegistryManager_2.0.0-v2
 ## Specify a imagePullPolicy
 ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
 ##
@@ -588,6 +604,7 @@ RegistryManager:
 StorageManager:
 ## Enable the StorageManager deployment & service
   enabled: true 
+  kafka_vars: true 
   name: storage-manager
 ## Number of StorageManager instances to deploy
 ##
@@ -598,7 +615,7 @@ StorageManager:
 ##
   image:
    repository: ibn40/digitaltwin
-   tag: StorageManager_2.0.0-SNAPSHOT
+   tag: StorageManager_2.0.0-v2
 ## Specify a imagePullPolicy
 ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
 ##
@@ -659,6 +676,7 @@ StorageManager:
 SubscriptionManager:
 ## Enable the SubscriptionManager deployment & service
   enabled: true 
+  kafka_vars: true 
   name: subscription-manager
 ## Number of SubscriptionManager instances to deploy
 ##
@@ -669,7 +687,7 @@ SubscriptionManager:
 ##
   image:
    repository: ibn40/digitaltwin
-   tag: SubscriptionManager_2.0.0-SNAPSHOT
+   tag: SubscriptionManager_2.0.0-v2
 ## Specify a imagePullPolicy
 ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
 ##

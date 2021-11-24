@@ -9,19 +9,19 @@ eureka:
       defaultZone: http://eureka:8761/eureka/
 
 bootstrap:
-  servers: kafka:9092
+  servers: ${KAFKA_BOOTSTRAP}:${KAFKA_PORT}         #edited
 
 
   
 spring:
   kafka:
     consumer:
-      bootstrap-servers: kafka:9092
+      bootstrap-servers: ${KAFKA_BOOTSTRAP}:${KAFKA_PORT}         #edited
   cloud:
     stream:
       kafka:
         binder:
-          brokers: kafka:9092
+          brokers:  ${KAFKA_BROKERS}:${KAFKA_PORT}      #edited
   datasource:
     hikari:
       connectionTimeout: 30000

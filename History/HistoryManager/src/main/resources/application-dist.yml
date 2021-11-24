@@ -2,7 +2,7 @@ server:
   port: 1040
 
 bootstrap:
-  servers: kafka:9092
+  servers: ${KAFKA_BOOTSTRAP}:${KAFKA_PORT}         #edited
 
 atcontext:
   url: http://gateway:9090/ngsi-ld/contextes/
@@ -17,12 +17,12 @@ eureka:
 spring:
   kafka:
     consumer:
-      bootstrap-servers: kafka:9092
+      bootstrap-servers: ${KAFKA_BOOTSTRAP}:${KAFKA_PORT}         #edited
   cloud:
     stream:
       kafka:
         binder:
-          brokers: kafka:9092
+          brokers: ${KAFKA_BROKERS}:${KAFKA_PORT}      #edited
   datasource:
     url: jdbc:postgresql://postgres:5432/ngb?ApplicationName=ngb_querymanager
     username: ngb
