@@ -98,7 +98,7 @@ public class HistoryController {
 		}
 	}
 
-	@RolesAllowed({"Factory-Admin", "Application Editor", "Reader"})
+	@RolesAllowed({"Factory-Admin", "Factory-Editor", "Reader"})
 	@GetMapping
 	public ResponseEntity<byte[]> retrieveTemporalEntity(HttpServletRequest request,
 			@RequestParam(value = "limit", required = false) Integer limit,
