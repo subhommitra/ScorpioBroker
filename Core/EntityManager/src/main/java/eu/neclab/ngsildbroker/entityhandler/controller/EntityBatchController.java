@@ -47,9 +47,9 @@ public class EntityBatchController {
 		httpUtils = HttpUtils.getInstance(contextResolver);
 	}
 
-	@RolesAllowed("Admin")
+	@RolesAllowed({"Factory-Admin", "Factory-Writer"})
 	@PostMapping("/create")
-	public ResponseEntity<byte[]> createMultiple(HttpServletRequest request, @RequestBody String payload, @RequestHeader String Authorization)
+	public ResponseEntity<byte[]> createMultiple(HttpServletRequest request, @RequestBody String payload)
 			throws ResponseException {
 		try {
 			HttpUtils.doPreflightCheck(request, payload);
@@ -78,9 +78,9 @@ public class EntityBatchController {
 		return httpUtils.generateReply(body, null, status, false);
 	}
 
-	@RolesAllowed({"Admin", "Application-Editor"})
+	@RolesAllowed({"Factory-Admin", "Factory-Editor", "Factory-Writer"})
 	@PostMapping("/upsert")
-	public ResponseEntity<byte[]> upsertMultiple(HttpServletRequest request, @RequestBody String payload, @RequestHeader String Authorization)
+	public ResponseEntity<byte[]> upsertMultiple(HttpServletRequest request, @RequestBody String payload)
 			throws ResponseException {
 		try {
 			HttpUtils.doPreflightCheck(request, payload);
@@ -92,9 +92,9 @@ public class EntityBatchController {
 		}
 	}
 
-	@RolesAllowed({"Admin", "Application-Editor"})
+	@RolesAllowed({"Factory-Admin", "Factory-Editor", "Factory-Writer"})
 	@PostMapping("/update")
-	public ResponseEntity<byte[]> updateMultiple(HttpServletRequest request, @RequestBody String payload, @RequestHeader String Authorization)
+	public ResponseEntity<byte[]> updateMultiple(HttpServletRequest request, @RequestBody String payload)
 			throws ResponseException {
 		try {
 			HttpUtils.doPreflightCheck(request, payload);
@@ -106,9 +106,9 @@ public class EntityBatchController {
 		}
 	}
 
-	@RolesAllowed("Admin")
+	@RolesAllowed("Factory-Admin")
 	@PostMapping("/delete")
-	public ResponseEntity<byte[]> deleteMultiple(HttpServletRequest request, @RequestBody String payload, @RequestHeader String Authorization)
+	public ResponseEntity<byte[]> deleteMultiple(HttpServletRequest request, @RequestBody String payload)
 			throws ResponseException {
 		try {
 //			String resolved = httpUtils.expandPayload(request, payload);

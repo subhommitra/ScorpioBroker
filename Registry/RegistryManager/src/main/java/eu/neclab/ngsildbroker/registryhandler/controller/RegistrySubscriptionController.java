@@ -88,9 +88,9 @@ public class RegistrySubscriptionController {
 	// ContextResolverService(prodChannel.atContextWriteChannel());
 	// }
 
-	@RolesAllowed({"Admin", "Subscriber"})
+	@RolesAllowed({"Factory-Admin", "Subscriber"})
 	@PostMapping
-	public ResponseEntity<byte[]> subscribeRest(HttpServletRequest request, @RequestBody String payload, @RequestHeader String Authorization)
+	public ResponseEntity<byte[]> subscribeRest(HttpServletRequest request, @RequestBody String payload)
 			throws ResponseException {
 		logger.trace("subscribeRest() :: started");
 		Subscription subscription;
@@ -120,10 +120,10 @@ public class RegistrySubscriptionController {
 		}
 	}
 
-	@RolesAllowed({"Admin", "Reader"})
+	@RolesAllowed({"Factory-Admin", "Reader"})
 	@GetMapping
 	public ResponseEntity<byte[]> getAllSubscriptions(HttpServletRequest request,
-			@RequestParam(required = false, name = "limit", defaultValue = "0") int limit, @RequestHeader String Authorization) throws ResponseException {
+			@RequestParam(required = false, name = "limit", defaultValue = "0") int limit) throws ResponseException {
 		logger.trace("getAllSubscriptions() :: started");
 		List<Subscription> result = null;
 		result = manager.getAllSubscriptions(HttpUtils.getHeaders(request), limit);
@@ -131,12 +131,12 @@ public class RegistrySubscriptionController {
 		return httpUtils.generateReply(request, DataSerializer.toJson(result));
 	}
 
-	@RolesAllowed({"Admin", "Reader", "Subscriber"})
+	@RolesAllowed({"Factory-Admin", "Reader", "Subscriber"})
 	@GetMapping("{id}")
 	// (method = RequestMethod.GET, value = "/{id}")
 	public ResponseEntity<byte[]> getSubscriptions(HttpServletRequest request,
 			@PathVariable(name = NGSIConstants.QUERY_PARAMETER_ID, required = true) URI id,
-			@RequestParam(required = false, name = "limit", defaultValue = "0") int limit, @RequestHeader String Authorization) {
+			@RequestParam(required = false, name = "limit", defaultValue = "0") int limit) {
 		try {
 			logger.trace("call getSubscriptions() ::");
 			return httpUtils.generateReply(request,
@@ -149,11 +149,11 @@ public class RegistrySubscriptionController {
 
 	}
 
-	@RolesAllowed({"Admin", "Subscriber"})
+	@RolesAllowed({"Factory-Admin", "Subscriber"})
 	@DeleteMapping("{id}")
 	@RequestMapping(method = RequestMethod.DELETE, value = "/{id}")
 	public ResponseEntity<byte[]> deleteSubscription(HttpServletRequest request,
-			@PathVariable(name = NGSIConstants.QUERY_PARAMETER_ID, required = true) URI id, @RequestHeader String Authorization) {
+			@PathVariable(name = NGSIConstants.QUERY_PARAMETER_ID, required = true) URI id) {
 		try {
 			logger.trace("call deleteSubscription() ::");
 			manager.unsubscribe(id, HttpUtils.getHeaders(request));
@@ -164,10 +164,10 @@ public class RegistrySubscriptionController {
 		return ResponseEntity.noContent().build();
 	}
 
-	@RolesAllowed({"Admin", "Subscriber"})
+	@RolesAllowed({"Factory-Admin", "Subscriber"})
 	@PatchMapping("{id}")
 	public ResponseEntity<byte[]> updateSubscription(HttpServletRequest request,
-			@PathVariable(name = NGSIConstants.QUERY_PARAMETER_ID, required = true) URI id, @RequestBody String payload, @RequestHeader String Authorization)
+			@PathVariable(name = NGSIConstants.QUERY_PARAMETER_ID, required = true) URI id, @RequestBody String payload)
 			throws ResponseException {
 		logger.trace("call updateSubscription() ::");
 		List<Object> context = HttpUtils.getAtContext(request);

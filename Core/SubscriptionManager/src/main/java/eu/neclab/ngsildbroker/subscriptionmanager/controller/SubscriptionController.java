@@ -89,10 +89,10 @@ public class SubscriptionController {
 		this.httpUtils = HttpUtils.getInstance(contextResolver);
 	}
 
-	@RolesAllowed({"Admin", "Subscriber"})
+	@RolesAllowed({"Factory-Admin", "Subscriber"})
 	@RequestMapping(method = RequestMethod.POST)
 	@ResponseBody
-	public ResponseEntity<byte[]> subscribeRest(HttpServletRequest request, @RequestBody String payload, @RequestHeader String Authorization) {
+	public ResponseEntity<byte[]> subscribeRest(HttpServletRequest request, @RequestBody String payload) {
 		logger.trace("subscribeRest() :: started");
 		Subscription subscription = null;
 
@@ -119,10 +119,10 @@ public class SubscriptionController {
 		}
 	}
 
-	@RolesAllowed({"Admin", "Reader"})
+	@RolesAllowed({"Factory-Admin", "Reader"})
 	@RequestMapping(method = RequestMethod.GET, value = "/")
 	public ResponseEntity<byte[]> getAllSubscriptions(HttpServletRequest request,
-			@RequestParam(required = false, name = "limit", defaultValue = "0") int limit, @RequestHeader String Authorization) throws ResponseException {
+			@RequestParam(required = false, name = "limit", defaultValue = "0") int limit) throws ResponseException {
 		logger.trace("getAllSubscriptions() :: started");
 		List<SubscriptionRequest> result = null;
 		result = manager.getAllSubscriptions(limit, HttpUtils.getHeaders(request));
@@ -139,11 +139,11 @@ public class SubscriptionController {
 		return result;
 	}
 
-	@RolesAllowed({"Admin, Subsciber, Reader"})
+	@RolesAllowed({"Factory-Admin, Subsciber, Reader"})
 	@RequestMapping(method = RequestMethod.GET, value = "/{id}")
 	public ResponseEntity<byte[]> getSubscriptions(HttpServletRequest request,
 			@PathVariable(name = NGSIConstants.QUERY_PARAMETER_ID, required = true) String id,
-			@RequestParam(required = false, name = "limit", defaultValue = "0") int limit, @RequestHeader String Authorization) {
+			@RequestParam(required = false, name = "limit", defaultValue = "0") int limit) {
 		try {
 			logger.trace("call getSubscriptions() ::");
 			return httpUtils.generateReply(request,
@@ -156,10 +156,10 @@ public class SubscriptionController {
 
 	}
 
-	@RolesAllowed({"Admin", "Subscriber"})
+	@RolesAllowed({"Factory-Admin", "Subscriber"})
 	@RequestMapping(method = RequestMethod.DELETE, value = "/{id}")
 	public ResponseEntity<byte[]> deleteSubscription(HttpServletRequest request,
-			@PathVariable(name = NGSIConstants.QUERY_PARAMETER_ID, required = true) URI id, @RequestHeader String Authorization) {
+			@PathVariable(name = NGSIConstants.QUERY_PARAMETER_ID, required = true) URI id) {
 		try {
 			logger.trace("call deleteSubscription() ::");
 			// System.out.println("DELETING SUBSCRIPTION: " + id + " at " +
@@ -172,11 +172,11 @@ public class SubscriptionController {
 		return ResponseEntity.noContent().build();
 	}
 
-	@RolesAllowed({"Admin", "Subscriber"})
+	@RolesAllowed({"Factory-Admin", "Subscriber"})
 	@RequestMapping(method = RequestMethod.PATCH, value = "/{" + NGSIConstants.QUERY_PARAMETER_ID + "}")
 	public ResponseEntity<byte[]> updateSubscription(HttpServletRequest request,
 			@PathVariable(name = NGSIConstants.QUERY_PARAMETER_ID, required = true) URI id,
-			@RequestBody String payload, @RequestHeader String Authorization) {
+			@RequestBody String payload) {
 		logger.trace("call updateSubscription() ::");
 
 		try {

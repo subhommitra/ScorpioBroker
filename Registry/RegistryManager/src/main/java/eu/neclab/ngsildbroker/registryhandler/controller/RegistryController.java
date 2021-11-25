@@ -98,13 +98,13 @@ public class RegistryController {
 	// }
 	// }
 
-	@RolesAllowed({"Admin", "Reader"})
+	@RolesAllowed({"Factory-Admin", "Reader"})
 	@GetMapping
 	public ResponseEntity<byte[]> discoverCSource(HttpServletRequest request,
 			@RequestParam HashMap<String, String> queryMap,
 			@RequestParam(required = false, name = "limit", defaultValue = "0") int limit,
 			@RequestParam(value = "offset", required = false) Integer offset,
-			@RequestParam(value = "qtoken", required = false) String qToken, @RequestHeader String Authorization) {
+			@RequestParam(value = "qtoken", required = false) String qToken) {
 		try {
 			logger.trace("getCSources() ::");
 			String queryParams = request.getQueryString();
@@ -158,10 +158,10 @@ public class RegistryController {
 		}
 	}
 
-	@RolesAllowed("Admin")
+	@RolesAllowed("Factory-Admin")
 	@PostMapping
 	public ResponseEntity<byte[]> registerCSource(HttpServletRequest request,
-			@RequestBody(required = false) String payload, @RequestHeader String Authorization) {
+			@RequestBody(required = false) String payload) {
 		try {
 			HttpUtils.doPreflightCheck(request, payload);
 			logger.debug("payload received :: " + payload);
@@ -185,10 +185,10 @@ public class RegistryController {
 		}
 	}
 
-	@RolesAllowed({"Admin", "Reader"})
+	@RolesAllowed({"Factory-Admin", "Reader"})
 	@GetMapping("{registrationId}")
 	public ResponseEntity<byte[]> getCSourceById(HttpServletRequest request,
-			@PathVariable("registrationId") String registrationId, @RequestHeader String Authorization) {
+			@PathVariable("registrationId") String registrationId) {
 		try {
 			logger.debug("get CSource() ::" + registrationId);
 			String tenantid = request.getHeader(NGSIConstants.TENANT_HEADER);
@@ -203,10 +203,10 @@ public class RegistryController {
 		}
 	}
 
-	@RolesAllowed("Admin")
+	@RolesAllowed("Factory-Admin")
 	@PatchMapping("{registrationId}")
 	public ResponseEntity<byte[]> updateCSource(HttpServletRequest request,
-			@PathVariable("registrationId") String registrationId, @RequestBody String payload, @RequestHeader String Authorization) {
+			@PathVariable("registrationId") String registrationId, @RequestBody String payload) {
 		try {
 			HttpUtils.doPreflightCheck(request, payload);
 			logger.debug("update CSource() ::" + registrationId);
@@ -224,10 +224,10 @@ public class RegistryController {
 		}
 	}
 
-	@RolesAllowed("Admin")
+	@RolesAllowed("Factory-Admin")
 	@DeleteMapping("{registrationId}")
 	public ResponseEntity<byte[]> deleteCSource(HttpServletRequest request,
-			@PathVariable("registrationId") String registrationId, @RequestHeader String Authorization) {
+			@PathVariable("registrationId") String registrationId) {
 		try {
 			logger.debug("delete CSource() ::" + registrationId);
 			csourceService.deleteCSourceRegistration(HttpUtils.getHeaders(request), registrationId);
