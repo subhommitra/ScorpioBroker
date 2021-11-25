@@ -24,6 +24,14 @@ spec:
       containers:
       - image: {{ .Values.EntityManager.image.repository }}:{{ .Values.EntityManager.image.tag }}
         env:
+          - name: CLIENT_ID
+            value: .Values.EntityManager.name
+          - name: CLIENT_SECRET
+            value: 9d93ef35-725a-4452-9c2e-cb280abe7fd1
+            # valueFrom:
+            #   secretKeyRef:
+            #     name: .Values.EntityManager.kc_secret
+            #     key: secret
         {{- range $key, $val := .Values.postgres_vars}}
           - name: {{ $key }}
             value: {{ $val | quote }}

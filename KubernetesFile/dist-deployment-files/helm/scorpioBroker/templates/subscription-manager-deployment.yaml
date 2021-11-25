@@ -24,6 +24,14 @@ spec:
       containers:
       - image: {{ .Values.SubscriptionManager.image.repository }}:{{ .Values.SubscriptionManager.image.tag }}
         env:
+          - name: CLIENT_ID
+            value: .Values.SubscriptionManager.name
+          - name: CLIENT_SECRET
+            value: 9cc121e5-ad62-42a7-a161-ef7b58c9be36
+            # valueFrom:
+            #   secretKeyRef:
+            #     name: .Values.SubscriptionManager.kc_secret
+            #     key: secret
         {{- range $key, $val := .Values.postgres_vars}}
           - name: {{ $key }}
             value: {{ $val | quote }}
