@@ -4,7 +4,7 @@ metadata:
   labels:
     service: registry-manager
   name: registry-manager
-  namespace: kafka
+  namespace: scorpio-broker
 spec:
   replicas: 1
   selector:
