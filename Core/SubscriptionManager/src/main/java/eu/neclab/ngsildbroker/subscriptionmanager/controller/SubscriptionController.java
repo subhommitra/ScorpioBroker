@@ -40,6 +40,12 @@ import eu.neclab.ngsildbroker.commons.serialization.DataSerializer;
 import eu.neclab.ngsildbroker.commons.stream.service.KafkaOps;
 import eu.neclab.ngsildbroker.commons.tools.HttpUtils;
 
+import org.springframework.web.bind.annotation.CrossOrigin;
+import javax.annotation.security.RolesAllowed;
+import org.apache.catalina.connector.Response;
+import org.springframework.context.annotation.Role;
+import org.springframework.web.bind.annotation.RequestHeader;
+
 @RestController
 @RequestMapping("/ngsi-ld/v1/subscriptions")
 public class SubscriptionController {
@@ -83,6 +89,7 @@ public class SubscriptionController {
 		this.httpUtils = HttpUtils.getInstance(contextResolver);
 	}
 
+	@RolesAllowed({"Factory-Admin", "Subscriber"})
 	@RequestMapping(method = RequestMethod.POST)
 	@ResponseBody
 	public ResponseEntity<byte[]> subscribeRest(HttpServletRequest request, @RequestBody String payload) {
@@ -112,6 +119,7 @@ public class SubscriptionController {
 		}
 	}
 
+	@RolesAllowed({"Factory-Admin", "Reader"})
 	@RequestMapping(method = RequestMethod.GET, value = "/")
 	public ResponseEntity<byte[]> getAllSubscriptions(HttpServletRequest request,
 			@RequestParam(required = false, name = "limit", defaultValue = "0") int limit) throws ResponseException {
@@ -131,6 +139,7 @@ public class SubscriptionController {
 		return result;
 	}
 
+	@RolesAllowed({"Factory-Admin, Subsciber, Reader"})
 	@RequestMapping(method = RequestMethod.GET, value = "/{id}")
 	public ResponseEntity<byte[]> getSubscriptions(HttpServletRequest request,
 			@PathVariable(name = NGSIConstants.QUERY_PARAMETER_ID, required = true) String id,
@@ -147,6 +156,7 @@ public class SubscriptionController {
 
 	}
 
+	@RolesAllowed({"Factory-Admin", "Subscriber"})
 	@RequestMapping(method = RequestMethod.DELETE, value = "/{id}")
 	public ResponseEntity<byte[]> deleteSubscription(HttpServletRequest request,
 			@PathVariable(name = NGSIConstants.QUERY_PARAMETER_ID, required = true) URI id) {
@@ -162,6 +172,7 @@ public class SubscriptionController {
 		return ResponseEntity.noContent().build();
 	}
 
+	@RolesAllowed({"Factory-Admin", "Subscriber"})
 	@RequestMapping(method = RequestMethod.PATCH, value = "/{" + NGSIConstants.QUERY_PARAMETER_ID + "}")
 	public ResponseEntity<byte[]> updateSubscription(HttpServletRequest request,
 			@PathVariable(name = NGSIConstants.QUERY_PARAMETER_ID, required = true) URI id,

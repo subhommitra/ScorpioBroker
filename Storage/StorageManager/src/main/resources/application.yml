@@ -7,7 +7,7 @@ spring:
     stream:
       kafka:
         binder:
-          brokers: localhost:9092
+          brokers: ${KAFKA_BROKERS}:${KAFKA_PORT}      #edited
   flyway:
     baselineOnMigrate: true    
 server:
@@ -17,7 +17,7 @@ max:
   request:
     size: 104857600
 bootstrap:
-  servers: localhost:9092
+  servers: ${KAFKA_BOOTSTRAP}:${KAFKA_PORT}         #edited
 query:
   topic: QUERY
   result:

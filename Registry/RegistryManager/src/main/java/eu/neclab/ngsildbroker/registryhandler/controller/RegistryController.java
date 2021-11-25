@@ -42,6 +42,12 @@ import eu.neclab.ngsildbroker.commons.tools.HttpUtils;
 import eu.neclab.ngsildbroker.registryhandler.repository.CSourceDAO;
 import eu.neclab.ngsildbroker.registryhandler.service.CSourceService;
 
+import org.springframework.web.bind.annotation.CrossOrigin;
+import javax.annotation.security.RolesAllowed;
+import org.apache.catalina.connector.Response;
+import org.springframework.context.annotation.Role;
+import org.springframework.web.bind.annotation.RequestHeader;
+
 /**
  * 
  * @version 1.0
@@ -92,6 +98,7 @@ public class RegistryController {
 	// }
 	// }
 
+	@RolesAllowed({"Factory-Admin", "Reader"})
 	@GetMapping
 	public ResponseEntity<byte[]> discoverCSource(HttpServletRequest request,
 			@RequestParam HashMap<String, String> queryMap,
@@ -151,6 +158,7 @@ public class RegistryController {
 		}
 	}
 
+	@RolesAllowed("Factory-Admin")
 	@PostMapping
 	public ResponseEntity<byte[]> registerCSource(HttpServletRequest request,
 			@RequestBody(required = false) String payload) {
@@ -177,6 +185,7 @@ public class RegistryController {
 		}
 	}
 
+	@RolesAllowed({"Factory-Admin", "Reader"})
 	@GetMapping("{registrationId}")
 	public ResponseEntity<byte[]> getCSourceById(HttpServletRequest request,
 			@PathVariable("registrationId") String registrationId) {
@@ -194,6 +203,7 @@ public class RegistryController {
 		}
 	}
 
+	@RolesAllowed("Factory-Admin")
 	@PatchMapping("{registrationId}")
 	public ResponseEntity<byte[]> updateCSource(HttpServletRequest request,
 			@PathVariable("registrationId") String registrationId, @RequestBody String payload) {
@@ -214,6 +224,7 @@ public class RegistryController {
 		}
 	}
 
+	@RolesAllowed("Factory-Admin")
 	@DeleteMapping("{registrationId}")
 	public ResponseEntity<byte[]> deleteCSource(HttpServletRequest request,
 			@PathVariable("registrationId") String registrationId) {

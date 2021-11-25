@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.GetMapping;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.JsonParseException;
 import eu.neclab.ngsildbroker.commons.constants.AppConstants;
@@ -31,6 +32,11 @@ import eu.neclab.ngsildbroker.commons.tools.HttpUtils;
 import eu.neclab.ngsildbroker.entityhandler.config.EntityProducerChannel;
 import eu.neclab.ngsildbroker.entityhandler.services.EntityService;
 import eu.neclab.ngsildbroker.entityhandler.validationutil.Validator;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import javax.annotation.security.RolesAllowed;
+import org.apache.catalina.connector.Response;
+import org.springframework.context.annotation.Role;
+import org.springframework.web.bind.annotation.RequestHeader;
 
 /**
  * 
@@ -38,6 +44,7 @@ import eu.neclab.ngsildbroker.entityhandler.validationutil.Validator;
  * @date 10-Jul-2018
  */
 @RestController
+@CrossOrigin
 @RequestMapping("/ngsi-ld/v1/entities")
 public class EntityController {// implements EntityHandlerInterface {
 
@@ -88,6 +95,8 @@ public class EntityController {// implements EntityHandlerInterface {
 	 * @param payload jsonld message
 	 * @return ResponseEntity object
 	 */
+	
+	@RolesAllowed({"Factory-Admin", "Factory-Writer"})
 	@PostMapping
 	public ResponseEntity<byte[]> createEntity(HttpServletRequest request,
 			@RequestBody(required = false) String payload) {
@@ -128,6 +137,7 @@ public class EntityController {// implements EntityHandlerInterface {
 	 * @param payload  json ld message
 	 * @return ResponseEntity object
 	 */
+	@RolesAllowed({"Factory-Admin", "Factory-Editor", "Factory-Writer"})
 	@PatchMapping("/**/attrs")
 	public ResponseEntity<byte[]> updateEntity(HttpServletRequest request, @RequestBody String payload) {
 		// String resolved = contextResolver.resolveContext(payload);
@@ -172,6 +182,7 @@ public class EntityController {// implements EntityHandlerInterface {
 	 * @param payload  jsonld message
 	 * @return ResponseEntity object
 	 */
+	@RolesAllowed({"Factory-Admin", "Factory-Writer"})
 	@PostMapping("/**/attrs")
 	public ResponseEntity<byte[]> appendEntity(HttpServletRequest request, @RequestBody String payload,
 			@RequestParam(required = false, name = "options") String options) {
@@ -222,6 +233,7 @@ public class EntityController {// implements EntityHandlerInterface {
 	 * @param payload
 	 * @return
 	 */
+	@RolesAllowed({"Factory-Admin", "Factory-Editor", "Factory-Writer"})
 	@PatchMapping("/**/attrs/**")
 	public ResponseEntity<byte[]> partialUpdateEntity(HttpServletRequest request, @RequestBody String payload) {
 		try {
@@ -276,6 +288,7 @@ public class EntityController {// implements EntityHandlerInterface {
 	 * @param attrId
 	 * @return
 	 */
+	@RolesAllowed("Factory-Admin")
 	@DeleteMapping("/**")
 	public ResponseEntity<byte[]> deleteAttribute(HttpServletRequest request,
 			@RequestParam(value = "datasetId", required = false) String datasetId,
@@ -321,6 +334,7 @@ public class EntityController {// implements EntityHandlerInterface {
 	 * @param entityId
 	 * @return
 	 */
+	
 	public ResponseEntity<byte[]> deleteEntity(HttpServletRequest request) {
 		try {
 			String entityId = HttpUtils.denormalize(request.getServletPath().replace("/ngsi-ld/v1/entities/", ""));

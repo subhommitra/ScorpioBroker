@@ -1,10 +1,50 @@
 ## namespace for deployment
-namespace: scorpio-broker
+# namespace: scorpio-test
+
+## environment variables for keycloak, do not modify SSL_REQUIRED, secrets currently hardcoded without using k8s secrets 
+keycloak_vars:
+  KEYCLOAK_SERVER_URL: http://65.0.240.6:8080/auth
+  REALM: Org
+  SSL_REQUIRED: none
+
+## environment variables for postgres
+postgres_vars:
+  POSTGRES_SERVICE: postgres
+  POSTGRES_PORT: 5432
+
+## environment variables for kafka
+kafka_vars:
+  KAFKA_ADVERTISED_HOST_NAME: my-cluster-kafka-brokers.kafka
+  KAFKA_BOOTSTRAP: my-cluster-kafka-bootstrap.kafka
+  KAFKA_BROKERS: my-cluster-kafka-brokers.kafka
+  KAFKA_ZOOKEEPER_CONNECT: my-cluster-zookeeper-client.kafka:2181
+  KAFKA_ADVERTISED_PORT: 9092
+  KAFKA_PORT: 9092
+  KAFKA_LOG_RETENTION_MS: 10000
+  KAFKA_LOG_RETENTION_CHECK_INTERVAL_MS: 5000
+
+## credentials for private docker repo
+imageCredentials:
+  name: ibn40-fusionreadonly
+  registry: https://index.docker.io/v1/
+  username: 
+  password: 
 
 ################################### SpringArgs #######################################################################
 springArgs:
   overrideSpringArgs: false
   value: >
+################################### Built-in Kafka ###################################################################
+kafka:
+  enabled: false
+
+################################### Built-in Postgres ###################################################################
+postgres:
+  enabled: true
+
+################################### Built-in Zookeeper ###################################################################
+zookeeper:
+  enabled: false
 
 ################################### Eureka Server #######################################################################
 eureka:
@@ -19,8 +59,8 @@ eureka:
 ## Please use only latest version of docker images as few older images might not work with kubernetes. 
 ##
   image:
-   repository: scorpiobroker/scorpio
-   tag: eureka-server_latest
+   repository: ibn40/digitaltwin
+   tag: eureka-server_2.0.0-v3
 ## Specify a imagePullPolicy
 ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
 ##
@@ -44,7 +84,7 @@ eureka:
 ## eureka containers'  readiness probes. Evaluated as a template.
 ## ref: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle/#container-probes
 ##
-  readinessProbe:
+  readinessProbe: 
    enabled: true
    initialDelaySeconds: 40
    failureThreshold: 6
@@ -89,8 +129,8 @@ gateway:
 ## Please use only latest version of docker images as few older images might not work with kubernetes. 
 ##
   image:
-   repository: scorpiobroker/scorpio
-   tag: gateway_latest
+   repository: ibn40/digitaltwin
+   tag: gateway_2.0.0-v3
 ## Specify a imagePullPolicy
 ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
 ##
@@ -149,7 +189,8 @@ gateway:
 ################################### AtContextServer ##########################################################################
 AtContextServer:
 ## Enable the AtContextServer deployment & service
-  enabled: true 
+  enabled: true
+  kafka_vars: true 
   name: at-context-server
 ## Number of AtContextServer instances to deploy
 ##
@@ -159,8 +200,8 @@ AtContextServer:
 ## Please use only latest version of docker images as few older images might not work with kubernetes. 
 ##
   image:
-   repository: scorpiobroker/scorpio
-   tag: AtContextServer_latest
+   repository: ibn40/digitaltwin
+   tag: AtContextServer_2.0.0-v3
 ## Specify a imagePullPolicy
 ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
 ##
@@ -229,8 +270,8 @@ ConfigServer:
 ## Please use only latest version of docker images as few older images might not work with kubernetes. 
 ##
   image:
-   repository: scorpiobroker/scorpio
-   tag: config-server_latest
+   repository: ibn40/digitaltwin
+   tag: config-server_2.0.0-v3
 ## Specify a imagePullPolicy
 ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
 ##
@@ -289,7 +330,10 @@ ConfigServer:
 ################################### EntityManager ##########################################################################
 EntityManager:
 ## Enable the EntityManager deployment & service
-  enabled: true 
+  enabled: true
+  kafka_vars: true
+## K8s secret needs to be created separately using kubectl create secret generic <kc_secret> --from-literal=secret='<password>' -n <namespace> 
+  kc_secret: 
   name: entity-manager
 ## Number of EntityManager instances to deploy
 ##
@@ -299,8 +343,8 @@ EntityManager:
 ## Please use only latest version of docker images as few older images might not work with kubernetes. 
 ##
   image:
-   repository: scorpiobroker/scorpio
-   tag: EntityManager_latest
+   repository: ibn40/digitaltwin
+   tag: EntityManager_2.0.0-v3
 ## Specify a imagePullPolicy
 ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
 ##
@@ -359,7 +403,10 @@ EntityManager:
 ################################### HistoryManager ##########################################################################
 HistoryManager:
 ## Enable the HistoryManager deployment & service
-  enabled: true 
+  enabled: true
+  kafka_vars: true 
+## K8s secret needs to be created separately using kubectl create secret generic <kc_secret> --from-literal=secret='<password>' -n <namespace> 
+  kc_secret: 
   name: history-manager
 ## Number of HistoryManager instances to deploy
 ##
@@ -369,8 +416,8 @@ HistoryManager:
 ## Please use only latest version of docker images as few older images might not work with kubernetes. 
 ##
   image:
-   repository: scorpiobroker/scorpio
-   tag: HistoryManager_latest
+   repository: ibn40/digitaltwin
+   tag: HistoryManager_2.0.0-v3
 ## Specify a imagePullPolicy
 ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
 ##
@@ -430,6 +477,9 @@ HistoryManager:
 QueryManager:
 ## Enable the QueryManager deployment & service
   enabled: true 
+  kafka_vars: true 
+## K8s secret needs to be created separately using kubectl create secret generic <kc_secret> --from-literal=secret='<password>' -n <namespace> 
+  kc_secret: 
   name: query-manager
 ## Number of QueryManager instances to deploy
 ##
@@ -439,8 +489,8 @@ QueryManager:
 ## Please use only latest version of docker images as few older images might not work with kubernetes. 
 ##
   image:
-   repository: scorpiobroker/scorpio
-   tag: QueryManager_latest
+   repository: ibn40/digitaltwin
+   tag: QueryManager_2.0.0-v3
 ## Specify a imagePullPolicy
 ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
 ##
@@ -500,6 +550,9 @@ QueryManager:
 RegistryManager:
 ## Enable the RegistryManager deployment & service
   enabled: true 
+  kafka_vars: true 
+## K8s secret needs to be created separately using kubectl create secret generic <kc_secret> --from-literal=secret='<password>' -n <namespace> 
+  kc_secret: 
   name: registry-manager
 ## Number of RegistryManager instances to deploy
 ##
@@ -509,8 +562,8 @@ RegistryManager:
 ## Please use only latest version of docker images as few older images might not work with kubernetes. 
 ##
   image:
-   repository: scorpiobroker/scorpio
-   tag: RegistryManager_latest
+   repository: ibn40/digitaltwin
+   tag: RegistryManager_2.0.0-v3
 ## Specify a imagePullPolicy
 ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
 ##
@@ -570,6 +623,7 @@ RegistryManager:
 StorageManager:
 ## Enable the StorageManager deployment & service
   enabled: true 
+  kafka_vars: true 
   name: storage-manager
 ## Number of StorageManager instances to deploy
 ##
@@ -579,8 +633,8 @@ StorageManager:
 ## Please use only latest version of docker images as few older images might not work with kubernetes. 
 ##
   image:
-   repository: scorpiobroker/scorpio
-   tag: StorageManager_latest
+   repository: ibn40/digitaltwin
+   tag: StorageManager_2.0.0-v3
 ## Specify a imagePullPolicy
 ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
 ##
@@ -641,6 +695,9 @@ StorageManager:
 SubscriptionManager:
 ## Enable the SubscriptionManager deployment & service
   enabled: true 
+  kafka_vars: true 
+## K8s secret needs to be created separately using kubectl create secret generic <kc_secret> --from-literal=secret='<password>' -n <namespace> 
+  kc_secret: 
   name: subscription-manager
 ## Number of SubscriptionManager instances to deploy
 ##
@@ -650,8 +707,8 @@ SubscriptionManager:
 ## Please use only latest version of docker images as few older images might not work with kubernetes. 
 ##
   image:
-   repository: scorpiobroker/scorpio
-   tag: SubscriptionManager_latest
+   repository: ibn40/digitaltwin
+   tag: SubscriptionManager_2.0.0-v3
 ## Specify a imagePullPolicy
 ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
 ##

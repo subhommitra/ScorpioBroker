@@ -24,6 +24,11 @@ import eu.neclab.ngsildbroker.commons.serialization.DataSerializer;
 import eu.neclab.ngsildbroker.commons.tools.HttpUtils;
 import eu.neclab.ngsildbroker.entityhandler.services.EntityService;
 
+import javax.annotation.security.RolesAllowed;
+import org.apache.catalina.connector.Response;
+import org.springframework.context.annotation.Role;
+import org.springframework.web.bind.annotation.RequestHeader;
+
 @RestController
 @RequestMapping("/ngsi-ld/v1/entityOperations")
 public class EntityBatchController {
@@ -42,6 +47,7 @@ public class EntityBatchController {
 		httpUtils = HttpUtils.getInstance(contextResolver);
 	}
 
+	@RolesAllowed({"Factory-Admin", "Factory-Writer"})
 	@PostMapping("/create")
 	public ResponseEntity<byte[]> createMultiple(HttpServletRequest request, @RequestBody String payload)
 			throws ResponseException {
@@ -72,6 +78,7 @@ public class EntityBatchController {
 		return httpUtils.generateReply(body, null, status, false);
 	}
 
+	@RolesAllowed({"Factory-Admin", "Factory-Editor", "Factory-Writer"})
 	@PostMapping("/upsert")
 	public ResponseEntity<byte[]> upsertMultiple(HttpServletRequest request, @RequestBody String payload)
 			throws ResponseException {
@@ -85,6 +92,7 @@ public class EntityBatchController {
 		}
 	}
 
+	@RolesAllowed({"Factory-Admin", "Factory-Editor", "Factory-Writer"})
 	@PostMapping("/update")
 	public ResponseEntity<byte[]> updateMultiple(HttpServletRequest request, @RequestBody String payload)
 			throws ResponseException {
@@ -98,6 +106,7 @@ public class EntityBatchController {
 		}
 	}
 
+	@RolesAllowed("Factory-Admin")
 	@PostMapping("/delete")
 	public ResponseEntity<byte[]> deleteMultiple(HttpServletRequest request, @RequestBody String payload)
 			throws ResponseException {

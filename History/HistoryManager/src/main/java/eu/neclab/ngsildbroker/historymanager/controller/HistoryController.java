@@ -39,6 +39,12 @@ import eu.neclab.ngsildbroker.historymanager.repository.HistoryDAO;
 import eu.neclab.ngsildbroker.historymanager.service.HistoryService;
 import eu.neclab.ngsildbroker.historymanager.utils.Validator;
 
+import org.springframework.web.bind.annotation.CrossOrigin;
+import javax.annotation.security.RolesAllowed;
+import org.apache.catalina.connector.Response;
+import org.springframework.context.annotation.Role;
+import org.springframework.web.bind.annotation.RequestHeader;
+
 @RestController
 @RequestMapping("/ngsi-ld/v1/temporal/entities")
 public class HistoryController {
@@ -69,6 +75,7 @@ public class HistoryController {
 		this.httpUtils = HttpUtils.getInstance(contextResolver);
 	}
 
+	@RolesAllowed("Factory-Admin")
 	@PostMapping
 	public ResponseEntity<byte[]> createTemporalEntity(HttpServletRequest request,
 			@RequestBody(required = false) String payload) {
@@ -91,6 +98,7 @@ public class HistoryController {
 		}
 	}
 
+	@RolesAllowed({"Factory-Admin", "Factory-Editor", "Reader"})
 	@GetMapping
 	public ResponseEntity<byte[]> retrieveTemporalEntity(HttpServletRequest request,
 			@RequestParam(value = "limit", required = false) Integer limit,
@@ -146,6 +154,7 @@ public class HistoryController {
 		}
 	}
 
+	@RolesAllowed({"Factory-Admin", "Factory-Editor", "Reader"})
 	@GetMapping("/{entityId}")
 	public ResponseEntity<byte[]> retrieveTemporalEntityById(HttpServletRequest request,
 			@PathVariable("entityId") String entityId) {
@@ -177,6 +186,7 @@ public class HistoryController {
 		}
 	}
 
+	@RolesAllowed("Factory-Admin")
 	@DeleteMapping("/{entityId}")
 	public ResponseEntity<byte[]> deleteTemporalEntityById(HttpServletRequest request,
 			@PathVariable("entityId") String entityId) {
@@ -197,6 +207,7 @@ public class HistoryController {
 		}
 	}
 
+	@RolesAllowed("Factory-Admin")
 	@PostMapping("/{entityId}/attrs")
 	public ResponseEntity<byte[]> addAttrib2TemopralEntity(HttpServletRequest request,
 			@PathVariable("entityId") String entityId, @RequestBody(required = false) String payload) {
@@ -218,6 +229,7 @@ public class HistoryController {
 		}
 	}
 
+	@RolesAllowed("Factory-Admin")
 	@DeleteMapping("/{entityId}/attrs/{attrId}")
 	public ResponseEntity<byte[]> deleteAttrib2TemporalEntity(HttpServletRequest request,
 			@PathVariable("entityId") String entityId, @PathVariable("attrId") String attrId) {
@@ -238,6 +250,7 @@ public class HistoryController {
 		}
 	}
 
+	@RolesAllowed({"Factory-Admin", "Factory-Editor"})
 	@PatchMapping("/{entityId}/attrs/{attrId}/{instanceId}")
 	public ResponseEntity<byte[]> modifyAttribInstanceTemporalEntity(HttpServletRequest request,
 			@PathVariable("entityId") String entityId, @PathVariable("attrId") String attrId,
@@ -264,6 +277,7 @@ public class HistoryController {
 		}
 	}
 
+	@RolesAllowed("Factory-Admin")
 	@DeleteMapping("/{entityId}/attrs/{attrId}/{instanceId}")
 	public ResponseEntity<byte[]> deleteAtrribInstanceTemporalEntity(HttpServletRequest request,
 			@PathVariable("entityId") String entityId, @PathVariable("attrId") String attrId,

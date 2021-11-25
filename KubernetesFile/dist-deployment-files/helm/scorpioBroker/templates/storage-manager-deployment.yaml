@@ -5,7 +5,7 @@ metadata:
   labels:
     service: {{ .Values.StorageManager.name }}
   name: {{ .Values.StorageManager.name }}
-  namespace: {{.Values.namespace}}
+  # namespace: {{.Values.namespace}}
 spec:
   replicas: {{ .Values.StorageManager.replicas }}
   selector:
@@ -23,6 +23,17 @@ spec:
     spec:
       containers:
       - image: {{ .Values.StorageManager.image.repository }}:{{ .Values.StorageManager.image.tag }}
+        env:
+        {{- range $key, $val := .Values.postgres_vars}}
+          - name: {{ $key }}
+            value: {{ $val | quote }}
+        {{- end }}
+        {{- if .Values.StorageManager.kafka_vars }}
+        {{- range $key, $val := .Values.kafka_vars }}
+          - name: {{ $key }}
+            value: {{ $val | quote }}
+        {{- end }}
+        {{- end}}
         {{- if .Values.springArgs.overrideSpringArgs }}
         env:
           - name: spring_args
@@ -60,5 +71,7 @@ spec:
       {{- end}}
       securityContext: {{ .Values.StorageManager.securityContext | toYaml }}
       terminationGracePeriodSeconds: {{ .Values.StorageManager.terminationGracePeriodSeconds }}
+      imagePullSecrets:
+        - name: {{ .Values.imageCredentials.name }}
 status: {}
 {{- end }}

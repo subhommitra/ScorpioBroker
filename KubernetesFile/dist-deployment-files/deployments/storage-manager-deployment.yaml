@@ -22,9 +22,16 @@ spec:
         service: storage-manager
     spec:
       containers:
-      - image: scorpiobroker/scorpio:StorageManager_latest
+      - image: ibn40/digitaltwin:StorageManager_test
         imagePullPolicy: Always
         name: storage-manager
+        env:                            #edited
+        - name: KAFKA_BROKERS
+          value: "my-cluster-kafka-brokers"
+        - name: KAFKA_PORT
+          value: "9092"
+        - name: KAFKA_BOOTSTRAP
+          value: "my-cluster-kafka-bootstrap"
         ports:
         - containerPort: 1029
           protocol: TCP

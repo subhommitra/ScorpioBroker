@@ -35,6 +35,12 @@ import eu.neclab.ngsildbroker.commons.tools.HttpUtils;
 import eu.neclab.ngsildbroker.queryhandler.services.QueryService;
 import eu.neclab.ngsildbroker.queryhandler.utils.Validator;
 
+import org.springframework.web.bind.annotation.CrossOrigin;
+import javax.annotation.security.RolesAllowed;
+import org.apache.catalina.connector.Response;
+import org.springframework.context.annotation.Role;
+import org.springframework.web.bind.annotation.RequestHeader;
+
 @RestController
 @RequestMapping("/ngsi-ld/v1")
 public class QueryController {// implements QueryHandlerInterface {
@@ -82,6 +88,8 @@ public class QueryController {// implements QueryHandlerInterface {
 	 * @param attrs
 	 * @return
 	 */
+
+	@RolesAllowed({"Factory-Admin", "Reader", "Factory-Editor"})
 	@GetMapping(path = "/entities/**")
 	public ResponseEntity<byte[]> getEntity(HttpServletRequest request,
 			@RequestParam(value = "attrs", required = false) List<String> attrs,
@@ -143,6 +151,8 @@ public class QueryController {// implements QueryHandlerInterface {
 	 * @param type
 	 * @return ResponseEntity object
 	 */
+	
+	@RolesAllowed({"Factory-Admin", "Reader", "Factory-Editor"})
 	@GetMapping("/entities")
 	public ResponseEntity<byte[]> getAllEntity(HttpServletRequest request,
 			@RequestParam(value = "attrs", required = false) List<String> attrs,

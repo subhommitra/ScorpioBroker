@@ -22,9 +22,16 @@ spec:
         service: eureka
     spec:
       containers:
-      - image: scorpiobroker/scorpio:eureka-server_latest
+      - image: ibn40/digitaltwin:eureka-server_test
         imagePullPolicy: Always
         name: eureka
+        env:                            #edited
+        - name: KAFKA_BROKERS
+          value: "my-cluster-kafka-brokers"
+        - name: KAFKA_PORT
+          value: "9092"
+        - name: KAFKA_BOOTSTRAP
+          value: "my-cluster-kafka-bootstrap"
         ports:
         - containerPort: 8761
           protocol: TCP
