@@ -83,5 +83,7 @@ spec:
       {{- end}}
       securityContext: {{ .Values.HistoryManager.securityContext | toYaml }}
       terminationGracePeriodSeconds: {{ .Values.HistoryManager.terminationGracePeriodSeconds }}
+      imagePullSecrets:
+        - name: {{ .Values.imageCredentials.name }}
 status: {}
 {{- end }}
