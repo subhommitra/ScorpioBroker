@@ -6,10 +6,10 @@ spring:
     stream:
       kafka:
         binder:
-          brokers: kafka:9092
+          brokers: ${KAFKA_BROKERS}:${KAFKA_PORT}      #edited
 
 bootstrap:
-  servers: kafka:9092
+  servers: ${KAFKA_BOOTSTRAP}:${KAFKA_PORT}         #edited
   
 eureka:
   instance:

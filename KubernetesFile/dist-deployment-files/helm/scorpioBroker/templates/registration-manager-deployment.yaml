@@ -5,7 +5,7 @@ metadata:
   labels:
     service: {{ .Values.RegistryManager.name }}
   name: {{ .Values.RegistryManager.name }}
-  namespace: {{.Values.namespace}}
+  # namespace: {{.Values.namespace}}
 spec:
   replicas: {{ .Values.RegistryManager.replicas }}
   selector:
@@ -23,6 +23,29 @@ spec:
     spec:
       containers:
       - image: {{ .Values.RegistryManager.image.repository }}:{{ .Values.RegistryManager.image.tag }}
+        env:
+          - name: CLIENT_ID
+            value: .Values.RegistryManager.name
+          - name: CLIENT_SECRET
+            value: ffc62a51-7d09-47b1-b187-b0f0e69b5709
+            # valueFrom:
+            #   secretKeyRef:
+            #     name: .Values.RegistryManager.kc_secret
+            #     key: secret
+        {{- range $key, $val := .Values.postgres_vars}}
+          - name: {{ $key }}
+            value: {{ $val | quote }}
+        {{- end }}
+        {{- range $key, $val := .Values.keycloak_vars}}
+          - name: {{ $key }}
+            value: {{ $val | quote }}
+        {{- end }}
+        {{- if .Values.RegistryManager.kafka_vars }}         
+        {{- range $key, $val := .Values.kafka_vars }}
+          - name: {{ $key }}
+            value: {{ $val | quote }}
+        {{- end }}
+        {{- end}}
         {{- if .Values.springArgs.overrideSpringArgs }}
         env:
           - name: spring_args
@@ -60,5 +83,7 @@ spec:
       {{- end}}
       securityContext: {{ .Values.RegistryManager.securityContext | toYaml }}
       terminationGracePeriodSeconds: {{ .Values.RegistryManager.terminationGracePeriodSeconds }}
+      imagePullSecrets:
+        - name: {{ .Values.imageCredentials.name }}
 status: {}
 {{- end }}

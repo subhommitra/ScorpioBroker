@@ -24,7 +24,7 @@ csources:
     topic: CONTEXT_REGISTRY
 #kafka broker path
 bootstrap:
-  servers: localhost:9092
+  servers: ${KAFKA_BOOTSTRAP}:${KAFKA_PORT}         #edited
 
 batchoperations:
   maxnumber:
@@ -64,7 +64,7 @@ spring:
     stream:
       kafka:
         binder:
-          brokers: localhost:9092
+          brokers: ${KAFKA_BROKERS}:${KAFKA_PORT}      #edited
       bindings:
         ENTITY_WRITE_CHANNEL:
           destination: ENTITY

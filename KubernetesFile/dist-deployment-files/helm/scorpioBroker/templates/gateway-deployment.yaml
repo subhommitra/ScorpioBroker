@@ -5,7 +5,7 @@ metadata:
   labels:
     service: {{ .Values.gateway.name }}
   name: {{ .Values.gateway.name }}
-  namespace: {{.Values.namespace}}
+  # namespace: {{.Values.namespace}}
 spec:
   replicas: {{ .Values.gateway.replicas }}
   selector:
@@ -60,5 +60,7 @@ spec:
       {{- end}}
       securityContext: {{ .Values.gateway.securityContext | toYaml }}
       terminationGracePeriodSeconds: {{ .Values.gateway.terminationGracePeriodSeconds }}
+      imagePullSecrets:
+        - name: {{ .Values.imageCredentials.name }}
 status: {}
 {{- end }}
