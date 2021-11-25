@@ -1,9 +1,9 @@
 ## namespace for deployment
-namespace: default
+# namespace: scorpio-test
 
 ## environment variables for keycloak, do not modify SSL_REQUIRED 
 keycloak_vars:
-  KEYCLOAK_SERVER_URL: 65.0.240.6:8080/auth
+  KEYCLOAK_SERVER_URL: http://65.0.240.6:8080/auth
   REALM: Org
   SSL_REQUIRED: none
 

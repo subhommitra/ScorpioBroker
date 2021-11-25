@@ -20,7 +20,7 @@ metadata:
   labels:
       component: kafka-claim0
   name: kafka-claim0
-  namespace: {{.Values.namespace}}
+  # namespace: {{.Values.namespace}}
 spec:
   storageClassName: manual
   accessModes:
