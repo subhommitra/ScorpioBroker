@@ -27,8 +27,8 @@ kafka_vars:
 imageCredentials:
   name: ibn40-fusionreadonly
   registry: https://index.docker.io/v1/
-  username: fusionreadonly
-  password: IndustryFusion4.0!
+  username: 
+  password: 
 
 ################################### SpringArgs #######################################################################
 springArgs:
