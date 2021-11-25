@@ -25,13 +25,13 @@ spec:
       - image: {{ .Values.HistoryManager.image.repository }}:{{ .Values.HistoryManager.image.tag }}
         env:
           - name: CLIENT_ID
-            value: .Values.HistoryManager.name
+            value: {{ .Values.HistoryManager.name }}
           - name: CLIENT_SECRET
-            value: 3e6437ed-891d-4129-86e7-c11b024b540d
-            # valueFrom:
-            #   secretKeyRef:
-            #     name: .Values.HistoryManager.kc_secret
-            #     key: secret
+            # value: 3e6437ed-891d-4129-86e7-c11b024b540d
+            valueFrom:
+              secretKeyRef:
+                name: keycloak-secrets
+                key: historyManagerSecret
         {{- range $key, $val := .Values.postgres_vars}}
           - name: {{ $key }}
             value: {{ $val | quote }}

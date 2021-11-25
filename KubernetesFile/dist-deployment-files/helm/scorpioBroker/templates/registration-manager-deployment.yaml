@@ -25,13 +25,13 @@ spec:
       - image: {{ .Values.RegistryManager.image.repository }}:{{ .Values.RegistryManager.image.tag }}
         env:
           - name: CLIENT_ID
-            value: .Values.RegistryManager.name
+            value: {{ .Values.RegistryManager.name }}
           - name: CLIENT_SECRET
-            value: ffc62a51-7d09-47b1-b187-b0f0e69b5709
-            # valueFrom:
-            #   secretKeyRef:
-            #     name: .Values.RegistryManager.kc_secret
-            #     key: secret
+            # value: ffc62a51-7d09-47b1-b187-b0f0e69b5709
+            valueFrom:
+              secretKeyRef:
+                name: keycloak-secrets
+                key: registryManagerSecret
         {{- range $key, $val := .Values.postgres_vars}}
           - name: {{ $key }}
             value: {{ $val | quote }}

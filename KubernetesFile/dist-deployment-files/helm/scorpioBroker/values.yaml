@@ -1,11 +1,19 @@
 ## namespace for deployment
 # namespace: scorpio-test
 
-## environment variables for keycloak, do not modify SSL_REQUIRED, secrets currently hardcoded without using k8s secrets 
+## environment variables for keycloak 
 keycloak_vars:
-  KEYCLOAK_SERVER_URL: http://65.0.240.6:8080/auth
-  REALM: Org
-  SSL_REQUIRED: none
+  KEYCLOAK_SERVER_URL:
+  REALM:
+  SSL_REQUIRED:
+
+## keycloak secrets:
+keycloakSecrets:
+  historyManagerSecret:
+  entityManagerSecret:
+  queryManagerSecret:
+  subscriptionManagerSecret:
+  registryManagerSecret:
 
 ## environment variables for postgres
 postgres_vars:
@@ -331,9 +339,7 @@ ConfigServer:
 EntityManager:
 ## Enable the EntityManager deployment & service
   enabled: true
-  kafka_vars: true
-## K8s secret needs to be created separately using kubectl create secret generic <kc_secret> --from-literal=secret='<password>' -n <namespace> 
-  kc_secret: 
+  kafka_vars: true 
   name: entity-manager
 ## Number of EntityManager instances to deploy
 ##
@@ -404,9 +410,7 @@ EntityManager:
 HistoryManager:
 ## Enable the HistoryManager deployment & service
   enabled: true
-  kafka_vars: true 
-## K8s secret needs to be created separately using kubectl create secret generic <kc_secret> --from-literal=secret='<password>' -n <namespace> 
-  kc_secret: 
+  kafka_vars: true  
   name: history-manager
 ## Number of HistoryManager instances to deploy
 ##
@@ -477,9 +481,7 @@ HistoryManager:
 QueryManager:
 ## Enable the QueryManager deployment & service
   enabled: true 
-  kafka_vars: true 
-## K8s secret needs to be created separately using kubectl create secret generic <kc_secret> --from-literal=secret='<password>' -n <namespace> 
-  kc_secret: 
+  kafka_vars: true  
   name: query-manager
 ## Number of QueryManager instances to deploy
 ##
@@ -550,9 +552,7 @@ QueryManager:
 RegistryManager:
 ## Enable the RegistryManager deployment & service
   enabled: true 
-  kafka_vars: true 
-## K8s secret needs to be created separately using kubectl create secret generic <kc_secret> --from-literal=secret='<password>' -n <namespace> 
-  kc_secret: 
+  kafka_vars: true  
   name: registry-manager
 ## Number of RegistryManager instances to deploy
 ##
@@ -695,9 +695,7 @@ StorageManager:
 SubscriptionManager:
 ## Enable the SubscriptionManager deployment & service
   enabled: true 
-  kafka_vars: true 
-## K8s secret needs to be created separately using kubectl create secret generic <kc_secret> --from-literal=secret='<password>' -n <namespace> 
-  kc_secret: 
+  kafka_vars: true  
   name: subscription-manager
 ## Number of SubscriptionManager instances to deploy
 ##
