@@ -10,3 +10,4 @@ Core/QueryManager/logs/
 Storage/StorageManager/logs/
 Go/pkg/
 /*.db
+KubernetesFile/dist-deployment-files/helm/creds.yaml
