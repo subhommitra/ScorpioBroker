@@ -35,6 +35,36 @@ spring:
       maxLifetime: 2000000
       connectionTimeout: 30000
 
+reader:
+  enabled: true
+  datasource:
+    url: "jdbc:postgresql://${POSTGRES_SERVICE}:${POSTGRES_PORT}/ngb?ApplicationName=ngb_storagemanager_reader"
+    username: ngb
+    password: ngb
+    hikari:
+      minimumIdle: 5
+      maximumPoolSize: 20
+      idleTimeout: 30000
+      poolName: SpringBootHikariCP_Reader
+      maxLifetime: 2000000
+      connectionTimeout: 30000
+
+writer:
+  enabled: true
+  datasource:
+    url: "jdbc:postgresql://${POSTGRES_SERVICE}:${POSTGRES_PORT}/ngb?ApplicationName=ngb_storagemanager_writer"
+    username: ngb
+    password: ngb
+    hikari:
+      minimumIdle: 5
+      maximumPoolSize: 20
+      idleTimeout: 30000
+      poolName: SpringBootHikariCP_Writer
+      maxLifetime: 2000000
+      connectionTimeout: 30000
+defaultLimit: 50
+maxLimit: 500
+
 # Keycloak Server Information
 keycloak:
   auth-server-url: ${KEYCLOAK_SERVER_URL}
