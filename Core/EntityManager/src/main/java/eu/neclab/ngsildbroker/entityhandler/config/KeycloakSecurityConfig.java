@@ -15,12 +15,14 @@ import org.springframework.security.core.authority.mapping.SimpleAuthorityMapper
 import org.springframework.security.core.session.SessionRegistryImpl;
 import org.springframework.security.web.authentication.session.RegisterSessionAuthenticationStrategy;
 import org.springframework.security.web.authentication.session.SessionAuthenticationStrategy;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
    
 
 
 @Configuration
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(jsr250Enabled = true)
+@ConditionalOnProperty(value = "keycloak.enabled", matchIfMissing = true)
 public class KeycloakSecurityConfig extends KeycloakWebSecurityConfigurerAdapter { 
 
     @Override

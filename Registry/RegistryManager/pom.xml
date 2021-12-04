@@ -67,6 +67,25 @@
 		<!-- End of block -->
 
 		<dependency>
+			<groupId>com.c4-soft.springaddons</groupId>
+			<artifactId>spring-security-oauth2-test-addons</artifactId>
+			<version>3.0.1</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.c4-soft.springaddons</groupId>
+			<artifactId>spring-security-oauth2-test-webmvc-addons</artifactId>
+			<version>3.0.1</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.junit.jupiter</groupId>
+			<artifactId>junit-jupiter-api</artifactId>
+			<version>5.0.0-M5</version>
+			<scope>test</scope>
+		</dependency>
+
+		<dependency>
 			<groupId>eu.neclab.ngsildbroker</groupId>
 			<artifactId>Commons</artifactId>
 			<version>1.0.0-SNAPSHOT</version>
