@@ -32,10 +32,19 @@ import eu.neclab.ngsildbroker.commons.exceptions.ResponseException;
 import eu.neclab.ngsildbroker.entityhandler.services.EntityInfoDAO;
 import eu.neclab.ngsildbroker.entityhandler.services.EntityService;
 
+import eu.neclab.ngsildbroker.entityhandler.config.EntityJdbcConfig;
+import org.springframework.test.context.ActiveProfiles;
+import org.keycloak.adapters.springboot.KeycloakSpringBootProperties;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.context.annotation.Import;
+
 
 @SpringBootTest(properties= {"spring.main.allow-bean-definition-overriding=true"})
 @RunWith(SpringRunner.class)
-@AutoConfigureMockMvc//(secure = false)
+@Import({EntityJdbcConfig.class})
+@ActiveProfiles("disable-security")
+@EnableConfigurationProperties(KeycloakSpringBootProperties.class)
+@AutoConfigureMockMvc(addFilters = false)
 public class EntityControllerTest {
 	@Autowired
     private MockMvc mockMvc;
