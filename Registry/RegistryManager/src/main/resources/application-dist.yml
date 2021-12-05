@@ -26,6 +26,9 @@ spring:
     consumer:
       bootstrap-servers: ${KAFKA_BOOTSTRAP}:${KAFKA_PORT}         #edited
   cloud:
+    config:
+      enable: true
+      uri: http://config-server:8888    
     stream:
       kafka:
         binder:
