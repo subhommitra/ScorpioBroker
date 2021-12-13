@@ -139,7 +139,7 @@ public class SubscriptionController {
 		return result;
 	}
 
-	@RolesAllowed({"Factory-Admin, Subsciber, Reader"})
+	@RolesAllowed({"Factory-Admin, Subscriber, Reader"})
 	@RequestMapping(method = RequestMethod.GET, value = "/{id}")
 	public ResponseEntity<byte[]> getSubscriptions(HttpServletRequest request,
 			@PathVariable(name = NGSIConstants.QUERY_PARAMETER_ID, required = true) String id,

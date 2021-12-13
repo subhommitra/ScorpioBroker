@@ -23,17 +23,20 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.keycloak.adapters.springboot.KeycloakSpringBootProperties;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.powermock.core.classloader.annotations.PowerMockIgnore;
 import org.powermock.modules.junit4.PowerMockRunner;
 import org.powermock.modules.junit4.PowerMockRunnerDelegate;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import eu.neclab.ngsildbroker.commons.constants.AppConstants;
@@ -46,8 +49,10 @@ import eu.neclab.ngsildbroker.queryhandler.services.QueryService;
 
 @SpringBootTest(properties = { "spring.main.allow-bean-definition-overriding=true" })
 @RunWith(PowerMockRunner.class)
+@ActiveProfiles("disable-security")
+@EnableConfigurationProperties(KeycloakSpringBootProperties.class)
 //@WebMvcTest(secure = false) 
-@AutoConfigureMockMvc(secure = false)
+@AutoConfigureMockMvc(addFilters = false)
 @PowerMockRunnerDelegate(SpringRunner.class)
 @PowerMockIgnore({ "javax.management.*", "com.sun.org.apache.xerces.*", "javax.xml.*", "org.xml.*", "org.w3c.*",
 		"com.sun.org.apache.xalan.*", "javax.activation.*", "javax.net.*", "javax.security.*" })

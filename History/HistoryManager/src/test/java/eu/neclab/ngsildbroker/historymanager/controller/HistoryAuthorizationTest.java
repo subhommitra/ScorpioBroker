@@ -18,17 +18,14 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.keycloak.adapters.springboot.KeycloakSpringBootProperties;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
@@ -41,12 +38,20 @@ import eu.neclab.ngsildbroker.historymanager.repository.HistoryDAO;
 import eu.neclab.ngsildbroker.historymanager.service.HistoryService;
 import eu.neclab.ngsildbroker.historymanager.utils.Validator;
 
+//Imports added for Keycloak Authorization Testing
+import com.c4_soft.springaddons.security.oauth2.test.annotations.keycloak.*;
+import com.c4_soft.springaddons.security.oauth2.test.mockmvc.keycloak.ServletKeycloakAuthUnitTestingSupport;
+import eu.neclab.ngsildbroker.historymanager.config.KeycloakSecurityConfig;
+import eu.neclab.ngsildbroker.historymanager.config.SpringBootKeycloakConfigResolver;
+import org.springframework.context.annotation.Import;
+
+//This class holds RBAC test cases for NGSI-LD APIs
 @RunWith(SpringRunner.class)
 @SpringBootTest(properties = { "spring.main.allow-bean-definition-overriding=true" })
-@ActiveProfiles("disable-security")
-@EnableConfigurationProperties(KeycloakSpringBootProperties.class)
-@AutoConfigureMockMvc(addFilters = false)
-public class HistoryControllerTest {
+@AutoConfigureMockMvc
+@Import({ ServletKeycloakAuthUnitTestingSupport.UnitTestConfig.class,
+		KeycloakSecurityConfig.class, SpringBootKeycloakConfigResolver.class })
+public class HistoryAuthorizationTest {
 	@Autowired
 	private MockMvc mockMvc;
 
@@ -101,12 +106,13 @@ public class HistoryControllerTest {
 		temporalPayload = "";
 	}
 
-	/**
-	 * this method is use for create the temporalEntity
+	/*
+	 * This method tests the creation of temporal entity with Factory-Admin RBAC
+	 * role
 	 */
-
 	@Test
-	public void createTemporalEntityTest() {
+	@WithMockKeycloakAuth({ "ROLE_Factory-Admin" })
+	public void whenUserIsFactoryAdminThenCreateTemporalEntityAllowed() {
 		try {
 			when(historyService.createTemporalEntityFromBinding(any(), any())).thenReturn(uri);
 			mockMvc.perform(post("/ngsi-ld/v1/temporal/entities/").contentType(AppConstants.NGB_APPLICATION_JSONLD)
@@ -118,101 +124,96 @@ public class HistoryControllerTest {
 		}
 	}
 
-	/**
-	 * this method is try to create the temporalEntity having "BAD REQUEST"
+	/*
+	 * This method tests the creation of temporal entity with Factory-Editor RBAC
+	 * role
 	 */
-
 	@Test
-	public void createTemporalEntityBadRequestTest() {
+	@WithMockKeycloakAuth({ "ROLE_Factory-Editor" })
+	public void whenUserIsFactoryEditorThenCreateTemporalEntityNotAllowed() {
 		try {
-			when(historyService.createTemporalEntityFromBinding(any(), any()))
-					.thenThrow(new ResponseException(ErrorType.BadRequestData));
+			when(historyService.createTemporalEntityFromBinding(any(), any())).thenReturn(uri);
 			mockMvc.perform(post("/ngsi-ld/v1/temporal/entities/").contentType(AppConstants.NGB_APPLICATION_JSONLD)
 					.accept(AppConstants.NGB_APPLICATION_JSONLD).content(temporalPayload))
-					.andExpect(status().isBadRequest()).andExpect(jsonPath("$.title").value("Bad Request Data."));
-
-			verify(historyService, times(1)).createTemporalEntityFromBinding(any(), any());
+					.andExpect(status().isForbidden());
+			// verify(historyService, times(1)).createTemporalEntityFromBinding(any(),
+			// any());
 		} catch (Exception e) {
 			Assert.fail(e.getMessage());
 		}
 	}
 
-	/**
-	 * this method is try to create the temporalEntity having "INTERNAL SERVER
-	 * ERROR"
-	 */
-
+	/* This method tests the creation of temporal entity with Reader RBAC role */
 	@Test
-	public void createTemporalEntityInternalServerErrorTest() {
+	@WithMockKeycloakAuth({ "ROLE_Reader" })
+	public void whenUserIsReaderThenCreateTemporalEntityNotAllowed() {
 		try {
-			when(historyService.createTemporalEntityFromBinding(any(), any())).thenThrow(new Exception());
+			when(historyService.createTemporalEntityFromBinding(any(), any())).thenReturn(uri);
 			mockMvc.perform(post("/ngsi-ld/v1/temporal/entities/").contentType(AppConstants.NGB_APPLICATION_JSONLD)
 					.accept(AppConstants.NGB_APPLICATION_JSONLD).content(temporalPayload))
-					.andExpect(status().isInternalServerError());
-
-			verify(historyService, times(1)).createTemporalEntityFromBinding(any(), any());
+					.andExpect(status().isForbidden());
+			// verify(historyService, times(1)).createTemporalEntityFromBinding(any(),
+			// any());
 		} catch (Exception e) {
 			Assert.fail(e.getMessage());
 		}
 	}
 
-	/**
-	 * this method is use for update the temporalEntity
+	/*
+	 * This method tests the updating an attribute of temporal entity with
+	 * Factory-Admin RBAC role
 	 */
-
 	@Test
-	public void updateAttrById() {
+	@WithMockKeycloakAuth({ "ROLE_Factory-Admin" })
+	public void whenUserIsFactoryAdminThenUpdateAttrByIdAllowed() {
 		try {
 			mockMvc.perform(post("/ngsi-ld/v1/temporal/entities/urn:ngsi-ld:testunit:151/attrs")
 					.contentType(AppConstants.NGB_APPLICATION_JSONLD).accept(AppConstants.NGB_APPLICATION_JSONLD)
 					.content(temporalPayload)).andExpect(status().isNoContent());
-
 		} catch (Exception e) {
 			Assert.fail(e.getMessage());
 		}
 	}
 
-	/**
-	 * this method is try to update the temporalEntity with "INTERNAL SERVER ERROR"
+	/*
+	 * This method tests the updating an attribute of temporal entity with
+	 * Factory-Editor RBAC role
 	 */
-
 	@Test
-	public void updateAttrByIdInternalServerError() {
+	@WithMockKeycloakAuth({ "ROLE_Factory-Editor" })
+	public void whenUserIsFactoryEditorThenUpdateAttrByIdNotAllowed() {
 		try {
-			Mockito.doThrow(new Exception()).when(historyService).addAttrib2TemporalEntity(any(), any(), any());
 			mockMvc.perform(post("/ngsi-ld/v1/temporal/entities/urn:ngsi-ld:testunit:151/attrs")
 					.contentType(AppConstants.NGB_APPLICATION_JSONLD).accept(AppConstants.NGB_APPLICATION_JSONLD)
-					.content(temporalPayload)).andExpect(status().isInternalServerError());
-
+					.content(temporalPayload)).andExpect(status().isForbidden());
 		} catch (Exception e) {
 			Assert.fail(e.getMessage());
 		}
 	}
 
-	/**
-	 * this method is try to update the temporalEntity having "BAD REQUEST"
+	/*
+	 * This method tests the updating an attribute of temporal entity with Reader
+	 * RBAC role
 	 */
-
 	@Test
-	public void updateAttrByIdBadRequest() {
+	@WithMockKeycloakAuth({ "ROLE_Reader" })
+	public void whenUserIsReaderThenUpdateAttrByIdNotAllowed() {
 		try {
-			Mockito.doThrow(new ResponseException(ErrorType.BadRequestData)).when(historyService)
-					.addAttrib2TemporalEntity(any(), any(), any());
 			mockMvc.perform(post("/ngsi-ld/v1/temporal/entities/urn:ngsi-ld:testunit:151/attrs")
 					.contentType(AppConstants.NGB_APPLICATION_JSONLD).accept(AppConstants.NGB_APPLICATION_JSONLD)
-					.content(temporalPayload)).andExpect(status().isBadRequest());
-
+					.content(temporalPayload)).andExpect(status().isForbidden());
 		} catch (Exception e) {
 			Assert.fail(e.getMessage());
 		}
 	}
 
-	/**
-	 * this method is use for modify the attribute of temporalEntity
+	/*
+	 * This method tests the modification of attribute instance with Factory-Admin
+	 * RBAC role
 	 */
-
 	@Test
-	public void modifyAttribInstanceTemporalEntityTest() {
+	@WithMockKeycloakAuth({ "ROLE_Factory-Admin" })
+	public void whenUserIsFactoryAdminThenModifyAttribInstanceTemporalEntityAllowed() {
 		try {
 			mockMvc.perform(patch("/ngsi-ld/v1/temporal/entities/{entityId}/attrs/{attrId}/{instanceId}",
 					"urn:ngsi-ld:testunit:151", "airQualityLevel", "urn:ngsi-ld:d43aa0fe-a986-4479-9fac-35b7eba232041")
@@ -224,208 +225,139 @@ public class HistoryControllerTest {
 		}
 	}
 
-	/**
-	 * this method is try to modify the attribute of temporalEntity having "INTERNAL
-	 * SERVER ERROR"
+	/*
+	 * This method tests the modification of attribute instance with Factory-Editor
+	 * RBAC role
 	 */
-
 	@Test
-	public void modifyAttribInstanceTemporalEntityInternalServerError() {
-
+	@WithMockKeycloakAuth({ "ROLE_Factory-Editor" })
+	public void whenUserIsFactoryEditorThenModifyAttribInstanceTemporalEntityAllowed() {
 		try {
-			Mockito.doThrow(new Exception()).when(historyService).modifyAttribInstanceTemporalEntity(any(), any(),
-					any(), any(), any(), any());
 			mockMvc.perform(patch("/ngsi-ld/v1/temporal/entities/{entityId}/attrs/{attrId}/{instanceId}",
 					"urn:ngsi-ld:testunit:151", "airQualityLevel", "urn:ngsi-ld:d43aa0fe-a986-4479-9fac-35b7eba232041")
 							.contentType(AppConstants.NGB_APPLICATION_JSON).accept(AppConstants.NGB_APPLICATION_JSONLD)
 							.content(temporalPayload))
-					.andExpect(status().isInternalServerError());
-		} catch (Exception e) {
-			Assert.fail(e.getMessage());
-		}
-	}
-
-	/**
-	 * this method is try to modify the attribute of temporalEntity having "BAD
-	 * REQUEST"
-	 */
-
-	@Test
-	public void modifyAttribInstanceTemporalEntityBadRequest() {
-
-		try {
-			Mockito.doThrow(new ResponseException(ErrorType.BadRequestData)).when(historyService)
-					.modifyAttribInstanceTemporalEntity(any(), any(), any(), any(), any(), any());
-			mockMvc.perform(patch("/ngsi-ld/v1/temporal/entities/{entityId}/attrs/{attrId}/{instanceId}",
-					"urn:ngsi-ld:testunit:151", "airQualityLevel", "urn:ngsi-ld:d43aa0fe-a986-4479-9fac-35b7eba232041")
-							.contentType(AppConstants.NGB_APPLICATION_JSON).accept(AppConstants.NGB_APPLICATION_JSONLD)
-							.content(temporalPayload))
-					.andExpect(status().isBadRequest());
-		} catch (Exception e) {
-			Assert.fail(e.getMessage());
-		}
-	}
-
-	/**
-	 * this method is use for delete the temporalEntity by attribute
-	 */
-
-	@Test
-	public void deleteTemporalEntityByAttr() {
-		List<Object> linkHeaders = new ArrayList<>();
-		try {
-			mockMvc.perform(
-					MockMvcRequestBuilders
-							.delete("/ngsi-ld/v1/temporal/entities/{entityId}/attrs/{attrId}",
-									"urn:ngsi-ld:testunit:151", "airQualityLevel")
-							.contentType(AppConstants.NGB_APPLICATION_JSONLD))
 					.andExpect(status().isNoContent());
-			verify(historyService, times(1)).delete(any(), "urn:ngsi-ld:testunit:151", "airQualityLevel", null,
-					linkHeaders);
 		} catch (Exception e) {
 			Assert.fail(e.getMessage());
 		}
 	}
 
-	/**
-	 * this method is use to delete the temporalEntity
+	/*
+	 * This method tests the modification of attribute instance with Reader RBAC
+	 * role
 	 */
-
 	@Test
-	public void deleteTemporalEntity() {
-		List<Object> linkHeaders = new ArrayList<>();
+	@WithMockKeycloakAuth({ "ROLE_Reader" })
+	public void whenUserIsReaderThenModifyAttribInstanceTemporalEntityNotAllowed() {
+		try {
+			mockMvc.perform(patch("/ngsi-ld/v1/temporal/entities/{entityId}/attrs/{attrId}/{instanceId}",
+					"urn:ngsi-ld:testunit:151", "airQualityLevel", "urn:ngsi-ld:d43aa0fe-a986-4479-9fac-35b7eba232041")
+							.contentType(AppConstants.NGB_APPLICATION_JSON).accept(AppConstants.NGB_APPLICATION_JSONLD)
+							.content(temporalPayload))
+					.andExpect(status().isForbidden());
+		} catch (Exception e) {
+			Assert.fail(e.getMessage());
+		}
+	}
+
+	/*
+	 * This method tests the deletion of temporal entity with Factory-Admin RBAC
+	 * role
+	 */
+	@Test
+	@WithMockKeycloakAuth({ "ROLE_Factory-Admin" })
+	public void whenUserIsFactoryAdminThenDeleteTemporalEntityAllowed() {
 		try {
 			mockMvc.perform(MockMvcRequestBuilders
 					.delete("/ngsi-ld/v1/temporal/entities/{entityId}", "urn:ngsi-ld:testunit:151")
 					.contentType(AppConstants.NGB_APPLICATION_JSONLD)).andExpect(status().isNoContent());
-			verify(historyService, times(1)).delete(any(), "urn:ngsi-ld:testunit:151", null, null, linkHeaders);
 		} catch (Exception e) {
 			Assert.fail(e.getMessage());
 		}
 	}
 
-	/**
-	 * this method is try to delete the temporalEntity having "INTERNAL SERVER
-	 * ERROR"
+	/*
+	 * This method tests the deletion of temporal entity with Factory-Editor RBAC
+	 * role
 	 */
-
 	@Test
-	public void deleteTemporalEntityInternalServerError() {
+	@WithMockKeycloakAuth({ "ROLE_Factory-Editor" })
+	public void whenUserIsFactoryEditorThenDeleteTemporalEntityNotAllowed() {
 		try {
-			Mockito.doThrow(new Exception()).when(historyService).delete(any(), any(), any(), any(), any());
 			mockMvc.perform(MockMvcRequestBuilders
-					.delete("/ngsi-ld/v1/temporal/entities/{entities}", "urn:ngsi-ld:testunit:151")
-					.contentType(AppConstants.NGB_APPLICATION_JSONLD)).andExpect(status().isInternalServerError());
+					.delete("/ngsi-ld/v1/temporal/entities/{entityId}", "urn:ngsi-ld:testunit:151")
+					.contentType(AppConstants.NGB_APPLICATION_JSONLD)).andExpect(status().isForbidden());
 		} catch (Exception e) {
 			Assert.fail(e.getMessage());
 		}
 	}
 
-	/**
-	 * this method is try to delete the temporalEntity having "BAD REQUEST"
-	 */
-
+	/* This method tests the deletion of temporal entity with Reader RBAC role */
 	@Test
-	public void deleteTemporalEntityBadRequest() {
+	@WithMockKeycloakAuth({ "ROLE_Reader" })
+	public void whenUserIsReaderThenDeleteTemporalEntityNotAllowed() {
 		try {
-			Mockito.doThrow(new ResponseException(ErrorType.BadRequestData)).when(historyService).delete(any(), any(),
-					any(), any(), any());
 			mockMvc.perform(MockMvcRequestBuilders
-					.delete("/ngsi-ld/v1/temporal/entities/{entities}", "urn:ngsi-ld:testunit:151")
-					.contentType(AppConstants.NGB_APPLICATION_JSONLD)).andExpect(status().isBadRequest());
+					.delete("/ngsi-ld/v1/temporal/entities/{entityId}", "urn:ngsi-ld:testunit:151")
+					.contentType(AppConstants.NGB_APPLICATION_JSONLD)).andExpect(status().isForbidden());
 		} catch (Exception e) {
 			Assert.fail(e.getMessage());
 		}
 	}
 
-	/**
-	 * this method is try to delete the attribute of temporalEntity having "INTERNAL
-	 * SERVER ERROR"
+	/*
+	 * This method tests the deletion by attribute of temporal entity with
+	 * Factory-Admin RBAC role
 	 */
-
 	@Test
-	public void deleteTemporalEntityByAttrInternalServerError() {
+	@WithMockKeycloakAuth({ "ROLE_Factory-Admin" })
+	public void whenUserIsFactoryAdminThenDeleteTemporalEntityByAttrAllowed() {
 		try {
-			Mockito.doThrow(new Exception()).when(historyService).delete(any(), any(), any(), any(), any());
 			mockMvc.perform(
 					MockMvcRequestBuilders
 							.delete("/ngsi-ld/v1/temporal/entities/{entityId}/attrs/{attrId}",
 									"urn:ngsi-ld:testunit:151", "airQualityLevel")
 							.contentType(AppConstants.NGB_APPLICATION_JSONLD))
-					.andExpect(status().isInternalServerError());
+					.andExpect(status().isNoContent());
 		} catch (Exception e) {
 			Assert.fail(e.getMessage());
 		}
 	}
 
-	/**
-	 * this method is try to delete the attribute of temporalEntity having "BAD
-	 * REQUEST"
+	/*
+	 * This method tests the deletion by attribute of temporal entity with
+	 * Factory-Editor RBAC role
 	 */
-
 	@Test
-	public void deleteTemporalEntityByAttrBadRequest() {
+	@WithMockKeycloakAuth({ "ROLE_Factory-Editor" })
+	public void whenUserIsFactoryEditorThenDeleteTemporalEntityByAttrNotAllowed() {
 		try {
-			Mockito.doThrow(new ResponseException(ErrorType.BadRequestData)).when(historyService).delete(any(), any(),
-					any(), any(), any());
 			mockMvc.perform(
 					MockMvcRequestBuilders
 							.delete("/ngsi-ld/v1/temporal/entities/{entityId}/attrs/{attrId}",
 									"urn:ngsi-ld:testunit:151", "airQualityLevel")
 							.contentType(AppConstants.NGB_APPLICATION_JSONLD))
-					.andExpect(status().isBadRequest());
+					.andExpect(status().isForbidden());
 		} catch (Exception e) {
 			Assert.fail(e.getMessage());
 		}
 	}
 
-	/**
-	 * this method is used to delete the temporal entity having "Resource not
-	 * found".
+	/*
+	 * This method tests the deletion by attribute of temporal entity with Reader
+	 * RBAC role
 	 */
-
 	@Test
-	public void deleteTemporalEntityByAttrResourceNotFound() {
+	@WithMockKeycloakAuth({ "ROLE_Reader" })
+	public void whenUserIsReaderThenDeleteTemporalEntityByAttrNotAllowed() {
 		try {
-			Mockito.doThrow(new ResponseException(ErrorType.NotFound)).when(historyService).delete(any(), any(), any(),
-					any(), any());
 			mockMvc.perform(
 					MockMvcRequestBuilders
 							.delete("/ngsi-ld/v1/temporal/entities/{entityId}/attrs/{attrId}",
 									"urn:ngsi-ld:testunit:151", "airQualityLevel")
 							.contentType(AppConstants.NGB_APPLICATION_JSONLD))
-					.andExpect(status().isNotFound());
-		} catch (Exception e) {
-			Assert.fail(e.getMessage());
-		}
-	}
-
-	/**
-	 * this method is used get the temporalEntity by ID.
-	 */
-
-	@Test
-	public void getTemporalEntityById() {
-		try {
-
-			mockMvc.perform(get("/ngsi-ld/v1/temporal/entities/{entityId}", "urn:ngsi-ld:testunit:151")
-					.accept(AppConstants.NGB_APPLICATION_JSON)).andExpect(status().isOk());
-		} catch (Exception e) {
-			Assert.fail(e.getMessage());
-		}
-	}
-
-	/**
-	 * this method is used get the temporalEntity by time filter.
-	 */
-
-	@Test
-	public void getTemporalEntityByTimefilter() {
-		try {
-			mockMvc.perform(
-					get("/ngsi-ld/v1/temporal/entities/2018-08-07T12:00:00Z").accept(AppConstants.NGB_APPLICATION_JSON))
-					.andExpect(status().isOk()).andDo(print());
-
+					.andExpect(status().isForbidden());
 		} catch (Exception e) {
 			Assert.fail(e.getMessage());
 		}

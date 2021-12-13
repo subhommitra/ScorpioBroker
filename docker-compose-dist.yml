@@ -11,7 +11,7 @@ services:
     ports:
       - "9092"
     env_file:
-      - kafka_env.env
+      - platform_services.env
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
     depends_on:
@@ -29,7 +29,7 @@ services:
     ports:
       - "27015"
     env_file:
-      - kafka_env.env
+      - platform_services.env
     depends_on:
       - kafka
       - eureka
@@ -38,13 +38,16 @@ services:
     ports:
       - "8888"
     depends_on:
-      - eureka  
+      - eureka
   emgr:
     image: ibn40/digitaltwin:EntityManager_2.0.0-SNAPSHOT
     ports:
       - "1025"
     env_file:
-      - kafka_env.env
+      - platform_services.env
+    environment:
+      - CLIENT_ID=entity-manager
+      - CLIENT_SECRET=
     depends_on:
       - kafka
       - eureka
@@ -53,13 +56,13 @@ services:
     ports:
       - "8761"
     env_file:
-      - kafka_env.env
+      - platform_services.env
   gateway:
     image: ibn40/digitaltwin:gateway_2.0.0-SNAPSHOT
     ports:
       - "9090:9090"
     env_file:
-      - kafka_env.env
+      - platform_services.env
     depends_on:
       - eureka
   histmgr:
@@ -67,7 +70,10 @@ services:
     ports:
       - "1040"
     env_file:
-      - kafka_env.env
+      - platform_services.env
+    environment:
+      - CLIENT_ID=history-manager
+      - CLIENT_SECRET=
     depends_on:
       - kafka
       - gateway
@@ -77,7 +83,10 @@ services:
     ports:
       - "1026"
     env_file:
-      - kafka_env.env
+      - platform_services.env
+    environment:
+      - CLIENT_ID=query-manager
+      - CLIENT_SECRET=
     depends_on:
       - kafka
       - postgres
@@ -87,7 +96,10 @@ services:
     ports:
       - "1030"
     env_file:
-      - kafka_env.env
+      - platform_services.env
+    environment:
+      - CLIENT_ID=registry-manager
+      - CLIENT_SECRET=
     depends_on:
       - kafka
       - postgres
@@ -98,7 +110,7 @@ services:
     ports:
       - "1029"
     env_file:
-      - kafka_env.env
+      - platform_services.env
     depends_on:
       - kafka
       - postgres
@@ -108,7 +120,11 @@ services:
     ports:
       - "2025"
     env_file:
-      - kafka_env.env
+      - platform_services.env
+    environment:
+      - CLIENT_ID=subscription-manager
+      - CLIENT_SECRET=
     depends_on:
       - kafka
       - eureka
+
