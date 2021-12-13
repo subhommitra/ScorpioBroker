@@ -15,6 +15,9 @@ directDbConnection: true
 #if directDbConnection is false then properties below are not used {{{
 spring:
   cloud:
+    config:
+      enable: true
+      uri: http://config-server:8888
     stream:
       kafka:
         binder:

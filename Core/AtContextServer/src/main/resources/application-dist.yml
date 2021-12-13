@@ -3,6 +3,9 @@ server:
 
 spring:
   cloud:
+    config:
+      enable: true
+      uri: http://config-server:8888    
     stream:
       kafka:
         binder:
